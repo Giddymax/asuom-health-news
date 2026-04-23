@@ -3,30 +3,57 @@ import type { ReactNode } from "react";
 
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { getSiteSettings } from "@/lib/repositories/cms-repository";
 import "@/app/globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: {
-    default: "Asuom Health News",
-    template: "%s | Asuom Health News"
-  },
-  description:
-    "A production-ready health blogging platform built with Next.js, Supabase, and a responsive newsroom interface.",
-  openGraph: {
-    title: "Asuom Health News",
-    description: "Trusted community health journalism for Ghanaian readers.",
-    type: "website"
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const base = new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+  const description = settings.metaDescription || settings.mission;
 
-export default function RootLayout({
+  return {
+    metadataBase: base,
+    title: {
+      default: settings.siteName,
+      template: `%s | ${settings.siteName}`
+    },
+    description,
+    openGraph: {
+      title: settings.siteName,
+      description,
+      type: "website",
+      ...(settings.ogImage ? { images: [{ url: settings.ogImage }] } : {})
+    }
+  };
+}
+
+const hexPattern = /^#[0-9a-fA-F]{3,8}$/;
+function safeColor(value: string, fallback: string): string {
+  return hexPattern.test(value) ? value : fallback;
+}
+
+export default async function RootLayout({
   children
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+  const { theme } = settings;
+
+  const themeCSS = `:root {
+  --primary: ${safeColor(theme.primary, "#2ecc8e")};
+  --primary-dark: ${safeColor(theme.primaryDark, "#1ba870")};
+  --secondary: ${safeColor(theme.secondary, "#153a28")};
+  --bg: ${safeColor(theme.bg, "#f7faf7")};
+  --surface: ${safeColor(theme.surface, "#ffffff")};
+  --text: ${safeColor(theme.text, "#23312b")};
+}`;
+
   return (
     <html lang="en" data-scroll-behavior="smooth">
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
+      </head>
       <body suppressHydrationWarning>
         <SiteHeader />
         {children}

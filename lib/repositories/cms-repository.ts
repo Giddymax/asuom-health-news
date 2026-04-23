@@ -17,6 +17,13 @@ import type {
   Video
 } from "@/lib/types";
 import {
+  defaultFooterExploreLinks,
+  defaultFooterNewsroomLinks,
+  defaultHomepageContent,
+  defaultNavLinks,
+  defaultTheme
+} from "@/lib/types";
+import {
   seedArticles,
   seedCategories,
   seedDonationCampaign,
@@ -109,7 +116,33 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     mission: data.mission ?? seedSettings.mission,
     contactEmail: data.contact_email ?? seedSettings.contactEmail,
     tickerItems: Array.isArray(data.ticker_items) ? data.ticker_items : seedSettings.tickerItems,
-    socialLinks: Array.isArray(data.social_links) ? data.social_links : seedSettings.socialLinks
+    socialLinks: Array.isArray(data.social_links) ? data.social_links : seedSettings.socialLinks,
+    theme:
+      data.theme && typeof data.theme === "object" && !Array.isArray(data.theme)
+        ? { ...defaultTheme, ...(data.theme as object) }
+        : defaultTheme,
+    logoImage: data.logo_image ?? seedSettings.logoImage,
+    heroImage: data.hero_image ?? seedSettings.heroImage,
+    midSectionImage: data.mid_section_image ?? seedSettings.midSectionImage,
+    navLinks:
+      Array.isArray(data.nav_links) && data.nav_links.length > 0
+        ? data.nav_links
+        : defaultNavLinks,
+    footerExploreLinks:
+      Array.isArray(data.footer_explore_links) && data.footer_explore_links.length > 0
+        ? data.footer_explore_links
+        : defaultFooterExploreLinks,
+    footerNewsroomLinks:
+      Array.isArray(data.footer_newsroom_links) && data.footer_newsroom_links.length > 0
+        ? data.footer_newsroom_links
+        : defaultFooterNewsroomLinks,
+    footerCopyright: data.footer_copyright || seedSettings.footerCopyright,
+    homepageContent:
+      data.homepage_content && typeof data.homepage_content === "object" && !Array.isArray(data.homepage_content)
+        ? { ...defaultHomepageContent, ...(data.homepage_content as object) }
+        : defaultHomepageContent,
+    metaDescription: data.meta_description || seedSettings.metaDescription,
+    ogImage: data.og_image ?? seedSettings.ogImage
   };
 }
 
@@ -448,7 +481,18 @@ export async function saveAdminContent(input: AdminContentInput) {
         mission: input.mission,
         contact_email: input.contactEmail,
         ticker_items: input.tickerItems,
-        social_links: input.socialLinks
+        social_links: input.socialLinks,
+        theme: input.theme,
+        logo_image: input.logoImage,
+        hero_image: input.heroImage,
+        mid_section_image: input.midSectionImage,
+        nav_links: input.navLinks,
+        footer_explore_links: input.footerExploreLinks,
+        footer_newsroom_links: input.footerNewsroomLinks,
+        footer_copyright: input.footerCopyright,
+        homepage_content: input.homepageContent,
+        meta_description: input.metaDescription,
+        og_image: input.ogImage
       },
       existing?.id ? { onConflict: "id" } : undefined
     );

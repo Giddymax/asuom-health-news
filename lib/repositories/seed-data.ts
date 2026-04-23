@@ -6,6 +6,13 @@ import type {
   SiteSettings,
   Video
 } from "@/lib/types";
+import {
+  defaultFooterExploreLinks,
+  defaultFooterNewsroomLinks,
+  defaultHomepageContent,
+  defaultNavLinks,
+  defaultTheme
+} from "@/lib/types";
 
 export const seedSettings: SiteSettings = {
   siteName: "Asuom Health News",
@@ -24,7 +31,19 @@ export const seedSettings: SiteSettings = {
     { label: "Facebook", href: "https://facebook.com" },
     { label: "Instagram", href: "https://instagram.com" },
     { label: "YouTube", href: "https://youtube.com" }
-  ]
+  ],
+  theme: defaultTheme,
+  logoImage: "/images/brand/ahn.jpg",
+  heroImage: "",
+  midSectionImage: "",
+  navLinks: defaultNavLinks,
+  footerExploreLinks: defaultFooterExploreLinks,
+  footerNewsroomLinks: defaultFooterNewsroomLinks,
+  footerCopyright: `© ${new Date().getFullYear()} Asuom Health News. All rights reserved.`,
+  homepageContent: defaultHomepageContent,
+  metaDescription:
+    "Trusted community health journalism for families, health workers, and local leaders across Ghana.",
+  ogImage: ""
 };
 
 export const seedCategories: Category[] = [

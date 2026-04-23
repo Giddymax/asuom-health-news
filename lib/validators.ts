@@ -85,7 +85,48 @@ export const adminContentSchema = z.discriminatedUnion("entityType", [
         label: z.string().min(2),
         href: z.string().url()
       })
-    )
+    ),
+    theme: z.object({
+      primary: z.string().regex(/^#[0-9A-Fa-f]{3,8}$/),
+      primaryDark: z.string().regex(/^#[0-9A-Fa-f]{3,8}$/),
+      secondary: z.string().regex(/^#[0-9A-Fa-f]{3,8}$/),
+      bg: z.string().regex(/^#[0-9A-Fa-f]{3,8}$/),
+      surface: z.string().regex(/^#[0-9A-Fa-f]{3,8}$/),
+      text: z.string().regex(/^#[0-9A-Fa-f]{3,8}$/)
+    }),
+    logoImage: z.string(),
+    heroImage: z.string(),
+    midSectionImage: z.string(),
+    navLinks: z.array(z.object({ label: z.string(), href: z.string() })),
+    footerExploreLinks: z.array(z.object({ label: z.string(), href: z.string() })),
+    footerNewsroomLinks: z.array(z.object({ label: z.string(), href: z.string() })),
+    footerCopyright: z.string(),
+    homepageContent: z.object({
+      heroEyebrow: z.string(),
+      heroPrimaryBtn: z.string(),
+      heroSecondaryBtn: z.string(),
+      topStoriesEyebrow: z.string(),
+      topStoriesTitle: z.string(),
+      topStoriesDescription: z.string(),
+      categoriesEyebrow: z.string(),
+      categoriesTitle: z.string(),
+      categoriesDescription: z.string(),
+      latestEyebrow: z.string(),
+      latestTitle: z.string(),
+      latestDescription: z.string(),
+      videoEyebrow: z.string(),
+      videoTitle: z.string(),
+      videoDescription: z.string(),
+      donateBtn: z.string(),
+      newsletterEyebrow: z.string(),
+      newsletterTitle: z.string(),
+      newsletterDescription: z.string(),
+      contactEyebrow: z.string(),
+      contactTitle: z.string(),
+      contactDescription: z.string()
+    }),
+    metaDescription: z.string(),
+    ogImage: z.string()
   }),
   z.object({
     entityType: z.literal("donation"),

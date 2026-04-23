@@ -30,9 +30,18 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   const matchingVideos = videos.filter((video) => video.categorySlug === slug);
 
+  const safeCssUrl = (v: string) =>
+    /^(https?:\/\/|\/)[^\s"';<>{}|\\^`[\]]*$/.test(v) ? v : "";
+
   return (
     <main>
       <section className="category-hero" style={{ "--category-color": category.color } as CSSProperties}>
+        {category.heroImage && safeCssUrl(category.heroImage) ? (
+          <>
+            <style dangerouslySetInnerHTML={{ __html: `.category-hero-bg{background-image:url("${safeCssUrl(category.heroImage)}")}` }} />
+            <div className="category-hero-bg" />
+          </>
+        ) : null}
         <Container className="category-hero-grid">
           <div>
             <span className="eyebrow">{category.name}</span>

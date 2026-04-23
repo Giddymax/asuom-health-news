@@ -3,7 +3,10 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import type { Article, Category, DonationCampaign, InfoPage, SiteSettings, Video } from "@/lib/types";
+import type { Article, Category, DonationCampaign, HomepageContent, InfoPage, SiteSettings, Video } from "@/lib/types";
+import { defaultHomepageContent, defaultTheme } from "@/lib/types";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { LinksEditor } from "@/components/admin/links-editor";
 
 type AdminContentFormsProps = {
   categories: Category[];
@@ -32,6 +35,15 @@ const deleteLabels: Record<Exclude<FormKind, "settings" | "donation">, string> =
   category: "Category",
   page: "Page"
 };
+
+function parseLinks(raw: FormDataEntryValue | undefined) {
+  try {
+    const parsed = JSON.parse(String(raw ?? "[]"));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export function AdminContentForms({
   categories,
@@ -83,6 +95,9 @@ export function AdminContentForms({
 
     const raw = Object.fromEntries(formData.entries());
 
+    const hpc = (key: keyof HomepageContent) =>
+      String(raw[`hpc_${key}`] ?? defaultHomepageContent[key]);
+
     const payload =
       mode === "settings"
         ? {
@@ -94,16 +109,50 @@ export function AdminContentForms({
             contactEmail: String(raw.contactEmail ?? ""),
             tickerItems: String(raw.tickerItems ?? "")
               .split("\n")
-              .map((item) => item.trim())
+              .map((s) => s.trim())
               .filter(Boolean),
-            socialLinks: String(raw.socialLinks ?? "")
-              .split("\n")
-              .map((item) => item.trim())
-              .filter(Boolean)
-              .map((item) => {
-                const [label, href] = item.split("|").map((part) => part.trim());
-                return { label, href };
-              })
+            socialLinks: parseLinks(raw.socialLinksJson),
+            theme: {
+              primary: String(raw.themePrimary ?? defaultTheme.primary),
+              primaryDark: String(raw.themePrimaryDark ?? defaultTheme.primaryDark),
+              secondary: String(raw.themeSecondary ?? defaultTheme.secondary),
+              bg: String(raw.themeBg ?? defaultTheme.bg),
+              surface: String(raw.themeSurface ?? defaultTheme.surface),
+              text: String(raw.themeText ?? defaultTheme.text)
+            },
+            logoImage: String(raw.logoImage ?? ""),
+            heroImage: String(raw.heroImage ?? ""),
+            midSectionImage: String(raw.midSectionImage ?? ""),
+            navLinks: parseLinks(raw.navLinksJson),
+            footerExploreLinks: parseLinks(raw.footerExploreJson),
+            footerNewsroomLinks: parseLinks(raw.footerNewsroomJson),
+            footerCopyright: String(raw.footerCopyright ?? ""),
+            homepageContent: {
+              heroEyebrow: hpc("heroEyebrow"),
+              heroPrimaryBtn: hpc("heroPrimaryBtn"),
+              heroSecondaryBtn: hpc("heroSecondaryBtn"),
+              topStoriesEyebrow: hpc("topStoriesEyebrow"),
+              topStoriesTitle: hpc("topStoriesTitle"),
+              topStoriesDescription: hpc("topStoriesDescription"),
+              categoriesEyebrow: hpc("categoriesEyebrow"),
+              categoriesTitle: hpc("categoriesTitle"),
+              categoriesDescription: hpc("categoriesDescription"),
+              latestEyebrow: hpc("latestEyebrow"),
+              latestTitle: hpc("latestTitle"),
+              latestDescription: hpc("latestDescription"),
+              videoEyebrow: hpc("videoEyebrow"),
+              videoTitle: hpc("videoTitle"),
+              videoDescription: hpc("videoDescription"),
+              donateBtn: hpc("donateBtn"),
+              newsletterEyebrow: hpc("newsletterEyebrow"),
+              newsletterTitle: hpc("newsletterTitle"),
+              newsletterDescription: hpc("newsletterDescription"),
+              contactEyebrow: hpc("contactEyebrow"),
+              contactTitle: hpc("contactTitle"),
+              contactDescription: hpc("contactDescription")
+            },
+            metaDescription: String(raw.metaDescription ?? ""),
+            ogImage: String(raw.ogImage ?? "")
           }
         : mode === "donation"
           ? {
@@ -161,9 +210,7 @@ export function AdminContentForms({
     const data = (await response.json()) as { message?: string };
     setPending(false);
     setMessage(data.message ?? "Saved.");
-    if (response.ok) {
-      router.refresh();
-    }
+    if (response.ok) router.refresh();
   }
 
   function resetForMode(nextMode: FormKind) {
@@ -198,11 +245,11 @@ export function AdminContentForms({
         <div className="admin-picker">
           <label>
             Edit Existing
-            <select value={selectedSlug} onChange={(event) => setSelectedSlug(event.target.value)}>
+            <select value={selectedSlug} onChange={(e) => setSelectedSlug(e.target.value)}>
               {mode !== "settings" && mode !== "donation" ? <option value="new">Create new</option> : null}
-              {options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>
@@ -212,26 +259,50 @@ export function AdminContentForms({
 
       <form className="admin-form" action={submitForm}>
         {mode === "post" ? (
-          <PostFields categories={categories} post={selectedRecord && "excerpt" in selectedRecord ? (selectedRecord as Article) : undefined} />
+          <PostFields
+            key={selectedSlug}
+            categories={categories}
+            post={selectedRecord && "excerpt" in selectedRecord ? (selectedRecord as Article) : undefined}
+            supabaseEnabled={supabaseEnabled}
+          />
         ) : null}
 
         {mode === "video" ? (
           <VideoFields
+            key={selectedSlug}
             categories={categories}
             video={selectedRecord && "videoUrl" in selectedRecord ? (selectedRecord as Video) : undefined}
+            supabaseEnabled={supabaseEnabled}
           />
         ) : null}
 
         {mode === "category" ? (
-          <CategoryFields category={selectedRecord && "heroTitle" in selectedRecord ? (selectedRecord as Category) : undefined} />
+          <CategoryFields
+            key={selectedSlug}
+            category={selectedRecord && "heroTitle" in selectedRecord ? (selectedRecord as Category) : undefined}
+            supabaseEnabled={supabaseEnabled}
+          />
         ) : null}
 
         {mode === "page" ? (
-          <PageFields page={selectedRecord && "content" in selectedRecord && "updatedAt" in selectedRecord ? (selectedRecord as InfoPage) : undefined} />
+          <PageFields
+            key={selectedSlug}
+            page={
+              selectedRecord && "content" in selectedRecord && "updatedAt" in selectedRecord
+                ? (selectedRecord as InfoPage)
+                : undefined
+            }
+            supabaseEnabled={supabaseEnabled}
+          />
         ) : null}
 
-        {mode === "settings" ? <SettingsFields settings={settings} /> : null}
-        {mode === "donation" ? <DonationFields campaign={donationCampaign} /> : null}
+        {mode === "settings" ? (
+          <SettingsFields key="settings" settings={settings} supabaseEnabled={supabaseEnabled} />
+        ) : null}
+
+        {mode === "donation" ? (
+          <DonationFields key="donation" campaign={donationCampaign} supabaseEnabled={supabaseEnabled} />
+        ) : null}
 
         <div className="admin-action-row">
           <button type="submit" className="button button-primary" disabled={pending || !supabaseEnabled}>
@@ -246,10 +317,9 @@ export function AdminContentForms({
                 if (!(mode in deleteLabels)) return;
                 const confirmed = window.confirm(
                   mode === "category"
-                    ? "Delete this category and its related videos? Posts are linked by foreign key and may also be removed depending on your database state."
+                    ? "Delete this category and its related videos? Posts may also be removed depending on your database state."
                     : "Delete this item permanently?"
                 );
-
                 if (!confirmed) return;
 
                 setPending(true);
@@ -258,10 +328,7 @@ export function AdminContentForms({
                 const response = await fetch("/api/admin/content", {
                   method: "DELETE",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    entityType: mode,
-                    slug: selectedSlug
-                  })
+                  body: JSON.stringify({ entityType: mode, slug: selectedSlug })
                 });
 
                 const data = (await response.json()) as { message?: string };
@@ -284,7 +351,7 @@ export function AdminContentForms({
   );
 }
 
-function PostFields({ categories, post }: { categories: Category[]; post?: Article }) {
+function PostFields({ categories, post, supabaseEnabled }: { categories: Category[]; post?: Article; supabaseEnabled: boolean }) {
   return (
     <>
       <label>
@@ -302,20 +369,14 @@ function PostFields({ categories, post }: { categories: Category[]; post?: Artic
       <label>
         Category
         <select name="categorySlug" defaultValue={post?.categorySlug ?? categories[0]?.slug ?? ""} required>
-          {categories.map((category) => (
-            <option key={category.slug} value={category.slug}>
-              {category.name}
-            </option>
+          {categories.map((c) => (
+            <option key={c.slug} value={c.slug}>{c.name}</option>
           ))}
         </select>
       </label>
       <label>
         Author
         <input name="author" defaultValue={post?.author ?? ""} required />
-      </label>
-      <label>
-        Cover Image Path
-        <input name="coverImage" defaultValue={post?.coverImage ?? "/images/placeholders/clinic.svg"} required />
       </label>
       <label>
         Read Time
@@ -336,6 +397,12 @@ function PostFields({ categories, post }: { categories: Category[]; post?: Artic
         Featured Rank
         <input type="number" name="featuredRank" min="0" defaultValue={post?.featuredRank ?? 0} />
       </label>
+      <ImageUploadField
+        name="coverImage"
+        label="Cover Image"
+        defaultValue={post?.coverImage ?? "/images/placeholders/clinic.svg"}
+        supabaseEnabled={supabaseEnabled}
+      />
       <label className="field-full">
         Content
         <textarea name="content" defaultValue={post?.body?.join("\n\n") ?? ""} rows={12} required />
@@ -344,7 +411,7 @@ function PostFields({ categories, post }: { categories: Category[]; post?: Artic
   );
 }
 
-function VideoFields({ categories, video }: { categories: Category[]; video?: Video }) {
+function VideoFields({ categories, video, supabaseEnabled }: { categories: Category[]; video?: Video; supabaseEnabled: boolean }) {
   return (
     <>
       <label>
@@ -360,10 +427,6 @@ function VideoFields({ categories, video }: { categories: Category[]; video?: Vi
         <textarea name="excerpt" defaultValue={video?.excerpt ?? ""} rows={3} required />
       </label>
       <label>
-        Thumbnail Path
-        <input name="thumbnail" defaultValue={video?.thumbnail ?? "/images/placeholders/video-postnatal.svg"} required />
-      </label>
-      <label>
         Duration Label
         <input name="duration" defaultValue={video?.duration ?? "5:00"} required />
       </label>
@@ -374,10 +437,8 @@ function VideoFields({ categories, video }: { categories: Category[]; video?: Vi
       <label>
         Category
         <select name="categorySlug" defaultValue={video?.categorySlug ?? categories[0]?.slug ?? ""} required>
-          {categories.map((category) => (
-            <option key={category.slug} value={category.slug}>
-              {category.name}
-            </option>
+          {categories.map((c) => (
+            <option key={c.slug} value={c.slug}>{c.name}</option>
           ))}
         </select>
       </label>
@@ -390,11 +451,17 @@ function VideoFields({ categories, video }: { categories: Category[]; video?: Vi
           required
         />
       </label>
+      <ImageUploadField
+        name="thumbnail"
+        label="Thumbnail"
+        defaultValue={video?.thumbnail ?? "/images/placeholders/video-postnatal.svg"}
+        supabaseEnabled={supabaseEnabled}
+      />
     </>
   );
 }
 
-function CategoryFields({ category }: { category?: Category }) {
+function CategoryFields({ category, supabaseEnabled }: { category?: Category; supabaseEnabled: boolean }) {
   return (
     <>
       <label>
@@ -406,12 +473,8 @@ function CategoryFields({ category }: { category?: Category }) {
         <input name="name" defaultValue={category?.name ?? ""} required />
       </label>
       <label>
-        Accent Color
-        <input name="color" defaultValue={category?.color ?? "#2ECC8E"} required />
-      </label>
-      <label>
-        Hero Image Path
-        <input name="heroImage" defaultValue={category?.heroImage ?? "/images/placeholders/community.svg"} required />
+        Accent Colour
+        <input type="color" name="color" defaultValue={category?.color ?? "#2ECC8E"} required />
       </label>
       <label className="field-full">
         Description
@@ -425,11 +488,17 @@ function CategoryFields({ category }: { category?: Category }) {
         Hero Description
         <textarea name="heroDescription" defaultValue={category?.heroDescription ?? ""} rows={5} required />
       </label>
+      <ImageUploadField
+        name="heroImage"
+        label="Hero Image"
+        defaultValue={category?.heroImage ?? "/images/placeholders/community.svg"}
+        supabaseEnabled={supabaseEnabled}
+      />
     </>
   );
 }
 
-function PageFields({ page }: { page?: InfoPage }) {
+function PageFields({ page, supabaseEnabled }: { page?: InfoPage; supabaseEnabled: boolean }) {
   return (
     <>
       <label>
@@ -440,14 +509,16 @@ function PageFields({ page }: { page?: InfoPage }) {
         Title
         <input name="title" defaultValue={page?.title ?? ""} required />
       </label>
-      <label>
-        Hero Image Path
-        <input name="heroImage" defaultValue={page?.heroImage ?? "/images/placeholders/about.svg"} required />
-      </label>
       <label className="field-full">
         Excerpt
         <textarea name="excerpt" defaultValue={page?.excerpt ?? ""} rows={3} required />
       </label>
+      <ImageUploadField
+        name="heroImage"
+        label="Hero Image"
+        defaultValue={page?.heroImage ?? "/images/placeholders/about.svg"}
+        supabaseEnabled={supabaseEnabled}
+      />
       <label className="field-full">
         Content
         <textarea name="content" defaultValue={page?.content?.join("\n\n") ?? ""} rows={12} required />
@@ -456,9 +527,13 @@ function PageFields({ page }: { page?: InfoPage }) {
   );
 }
 
-function SettingsFields({ settings }: { settings: SiteSettings }) {
+function SettingsFields({ settings, supabaseEnabled }: { settings: SiteSettings; supabaseEnabled: boolean }) {
+  const theme = settings.theme ?? defaultTheme;
+  const hpc = settings.homepageContent ?? defaultHomepageContent;
+
   return (
     <>
+      {/* ── Branding ── */}
       <label>
         Site Name
         <input name="siteName" defaultValue={settings.siteName} required />
@@ -473,30 +548,204 @@ function SettingsFields({ settings }: { settings: SiteSettings }) {
       </label>
       <label className="field-full">
         Mission Copy
-        <textarea name="mission" defaultValue={settings.mission} rows={5} required />
+        <textarea name="mission" defaultValue={settings.mission} rows={4} required />
       </label>
       <label>
         Contact Email
         <input name="contactEmail" type="email" defaultValue={settings.contactEmail} required />
       </label>
       <label className="field-full">
-        Breaking News Ticker Items
-        <textarea name="tickerItems" defaultValue={settings.tickerItems.join("\n")} rows={6} required />
+        Breaking News Ticker Items (one per line)
+        <textarea name="tickerItems" defaultValue={settings.tickerItems.join("\n")} rows={5} required />
+      </label>
+
+      {/* ── Navigation ── */}
+      <p className="field-full admin-section-label">Navigation Links</p>
+      <LinksEditor
+        name="navLinksJson"
+        sectionLabel="Header Navigation"
+        defaultLinks={settings.navLinks}
+        labelPlaceholder="Link label (e.g. Community)"
+        hrefPlaceholder="Path or URL (e.g. /categories/community-health)"
+      />
+
+      {/* ── Footer ── */}
+      <p className="field-full admin-section-label">Footer</p>
+      <LinksEditor
+        name="footerExploreJson"
+        sectionLabel="Explore Column Links"
+        defaultLinks={settings.footerExploreLinks}
+        labelPlaceholder="Label"
+        hrefPlaceholder="/categories/slug"
+      />
+      <LinksEditor
+        name="footerNewsroomJson"
+        sectionLabel="Newsroom Column Links"
+        defaultLinks={settings.footerNewsroomLinks}
+        labelPlaceholder="Label"
+        hrefPlaceholder="/info/slug"
+      />
+      <label className="field-full">
+        Copyright Text
+        <input name="footerCopyright" defaultValue={settings.footerCopyright} />
+      </label>
+
+      {/* ── Social Links ── */}
+      <p className="field-full admin-section-label">Social Media Links</p>
+      <LinksEditor
+        name="socialLinksJson"
+        sectionLabel="Social Profiles"
+        defaultLinks={settings.socialLinks}
+        labelPlaceholder="Platform (e.g. Facebook)"
+        hrefPlaceholder="https://..."
+      />
+
+      {/* ── Homepage Section Text ── */}
+      <p className="field-full admin-section-label">Homepage — Hero Section</p>
+      <label>
+        Eyebrow Text
+        <input name="hpc_heroEyebrow" defaultValue={hpc.heroEyebrow} />
+      </label>
+      <label>
+        Primary Button Text
+        <input name="hpc_heroPrimaryBtn" defaultValue={hpc.heroPrimaryBtn} />
+      </label>
+      <label>
+        Secondary Button Text
+        <input name="hpc_heroSecondaryBtn" defaultValue={hpc.heroSecondaryBtn} />
+      </label>
+
+      <p className="field-full admin-section-label">Homepage — Top Stories Section</p>
+      <label>
+        Eyebrow
+        <input name="hpc_topStoriesEyebrow" defaultValue={hpc.topStoriesEyebrow} />
+      </label>
+      <label>
+        Title
+        <input name="hpc_topStoriesTitle" defaultValue={hpc.topStoriesTitle} />
       </label>
       <label className="field-full">
-        Social Links
-        <textarea
-          name="socialLinks"
-          defaultValue={settings.socialLinks.map((item) => `${item.label} | ${item.href}`).join("\n")}
-          rows={5}
-          required
-        />
+        Description
+        <input name="hpc_topStoriesDescription" defaultValue={hpc.topStoriesDescription} />
+      </label>
+
+      <p className="field-full admin-section-label">Homepage — Categories Section</p>
+      <label>
+        Eyebrow
+        <input name="hpc_categoriesEyebrow" defaultValue={hpc.categoriesEyebrow} />
+      </label>
+      <label>
+        Title
+        <input name="hpc_categoriesTitle" defaultValue={hpc.categoriesTitle} />
+      </label>
+      <label className="field-full">
+        Description
+        <input name="hpc_categoriesDescription" defaultValue={hpc.categoriesDescription} />
+      </label>
+
+      <p className="field-full admin-section-label">Homepage — Latest Articles Section</p>
+      <label>
+        Eyebrow
+        <input name="hpc_latestEyebrow" defaultValue={hpc.latestEyebrow} />
+      </label>
+      <label>
+        Title
+        <input name="hpc_latestTitle" defaultValue={hpc.latestTitle} />
+      </label>
+      <label className="field-full">
+        Description
+        <input name="hpc_latestDescription" defaultValue={hpc.latestDescription} />
+      </label>
+
+      <p className="field-full admin-section-label">Homepage — Video Briefings Section</p>
+      <label>
+        Eyebrow
+        <input name="hpc_videoEyebrow" defaultValue={hpc.videoEyebrow} />
+      </label>
+      <label>
+        Title
+        <input name="hpc_videoTitle" defaultValue={hpc.videoTitle} />
+      </label>
+      <label className="field-full">
+        Description
+        <input name="hpc_videoDescription" defaultValue={hpc.videoDescription} />
+      </label>
+
+      <p className="field-full admin-section-label">Homepage — Donation & Other Sections</p>
+      <label>
+        Donate Button Text
+        <input name="hpc_donateBtn" defaultValue={hpc.donateBtn} />
+      </label>
+      <label>
+        Newsletter Eyebrow
+        <input name="hpc_newsletterEyebrow" defaultValue={hpc.newsletterEyebrow} />
+      </label>
+      <label className="field-full">
+        Newsletter Title
+        <input name="hpc_newsletterTitle" defaultValue={hpc.newsletterTitle} />
+      </label>
+      <label className="field-full">
+        Newsletter Description
+        <input name="hpc_newsletterDescription" defaultValue={hpc.newsletterDescription} />
+      </label>
+      <label>
+        Contact Eyebrow
+        <input name="hpc_contactEyebrow" defaultValue={hpc.contactEyebrow} />
+      </label>
+      <label className="field-full">
+        Contact Title
+        <input name="hpc_contactTitle" defaultValue={hpc.contactTitle} />
+      </label>
+      <label className="field-full">
+        Contact Description
+        <input name="hpc_contactDescription" defaultValue={hpc.contactDescription} />
+      </label>
+
+      {/* ── Site Images ── */}
+      <p className="field-full admin-section-label">Site Images</p>
+      <ImageUploadField name="logoImage" label="Site Logo" defaultValue={settings.logoImage} supabaseEnabled={supabaseEnabled} />
+      <ImageUploadField name="heroImage" label="Homepage Hero Background" defaultValue={settings.heroImage} supabaseEnabled={supabaseEnabled} />
+      <ImageUploadField name="midSectionImage" label="Mid-Section Banner" defaultValue={settings.midSectionImage} supabaseEnabled={supabaseEnabled} />
+
+      {/* ── SEO ── */}
+      <p className="field-full admin-section-label">SEO / Metadata</p>
+      <label className="field-full">
+        Meta Description
+        <textarea name="metaDescription" defaultValue={settings.metaDescription} rows={3} />
+      </label>
+      <ImageUploadField name="ogImage" label="Open Graph / Social Share Image" defaultValue={settings.ogImage} supabaseEnabled={supabaseEnabled} />
+
+      {/* ── Colour Theme ── */}
+      <p className="field-full admin-section-label">Colour Theme</p>
+      <label>
+        Primary Colour
+        <input type="color" name="themePrimary" defaultValue={theme.primary} />
+      </label>
+      <label>
+        Primary Dark
+        <input type="color" name="themePrimaryDark" defaultValue={theme.primaryDark} />
+      </label>
+      <label>
+        Secondary Colour
+        <input type="color" name="themeSecondary" defaultValue={theme.secondary} />
+      </label>
+      <label>
+        Background
+        <input type="color" name="themeBg" defaultValue={theme.bg} />
+      </label>
+      <label>
+        Surface / Cards
+        <input type="color" name="themeSurface" defaultValue={theme.surface} />
+      </label>
+      <label>
+        Body Text
+        <input type="color" name="themeText" defaultValue={theme.text} />
       </label>
     </>
   );
 }
 
-function DonationFields({ campaign }: { campaign: DonationCampaign }) {
+function DonationFields({ campaign, supabaseEnabled }: { campaign: DonationCampaign; supabaseEnabled: boolean }) {
   return (
     <>
       <label>
@@ -535,10 +784,12 @@ function DonationFields({ campaign }: { campaign: DonationCampaign }) {
         Payment Link
         <input name="paymentLink" defaultValue={campaign.paymentLink ?? ""} />
       </label>
-      <label>
-        Image Path
-        <input name="image" defaultValue={campaign.image} required />
-      </label>
+      <ImageUploadField
+        name="image"
+        label="Campaign Image"
+        defaultValue={campaign.image}
+        supabaseEnabled={supabaseEnabled}
+      />
       <label>
         Active Campaign
         <input type="checkbox" name="isActive" defaultChecked />

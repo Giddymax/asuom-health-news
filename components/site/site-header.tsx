@@ -4,14 +4,6 @@ import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { getSiteSettings } from "@/lib/repositories/cms-repository";
 
-const navItems = [
-  { href: "/", label: "Home" },
-  { href: "/categories/community-health", label: "Community" },
-  { href: "/categories/international-news", label: "International" },
-  { href: "/info/about", label: "About" },
-  { href: "/donate", label: "Donate" }
-];
-
 export async function SiteHeader() {
   const settings = await getSiteSettings();
 
@@ -19,14 +11,20 @@ export async function SiteHeader() {
     <header className="site-header">
       <Container className="header-shell">
         <Link href="/" className="brand-mark">
-          <Image src="/images/brand/ahn.jpg" alt="Asuom Health News" width={52} height={52} priority />
+          <Image
+            src={settings.logoImage || "/images/brand/ahn.jpg"}
+            alt={settings.siteName}
+            width={52}
+            height={52}
+            priority
+          />
           <span>
             <strong>{settings.siteName}</strong>
             <small>{settings.tagline}</small>
           </span>
         </Link>
         <nav className="main-nav" aria-label="Primary">
-          {navItems.map((item) => (
+          {settings.navLinks.map((item) => (
             <Link key={item.href} href={item.href}>
               {item.label}
             </Link>

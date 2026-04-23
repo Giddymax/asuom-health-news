@@ -30,23 +30,33 @@ export default async function HomePage() {
   const lead = featuredArticles[0] ?? allArticles[0];
   const secondary = featuredArticles.slice(1, 3);
   const latest = allArticles.slice(0, 6);
+  const hpc = settings.homepageContent;
+
+  const safeCssUrl = (v: string) =>
+    /^(https?:\/\/|\/)[^\s"';<>{}|\\^`[\]]*$/.test(v) ? v : "";
 
   return (
     <main>
       <NewsTicker items={settings.tickerItems} />
 
       <section className="hero-section">
+        {settings.heroImage && safeCssUrl(settings.heroImage) ? (
+          <>
+            <style dangerouslySetInnerHTML={{ __html: `.hero-bg{background-image:url("${safeCssUrl(settings.heroImage)}")}` }} />
+            <div className="hero-bg" />
+          </>
+        ) : null}
         <Container className="hero-grid">
           <div className="hero-copy">
-            <span className="eyebrow">Community Health Desk</span>
+            <span className="eyebrow">{hpc.heroEyebrow}</span>
             <h1>{settings.featuredTopic}</h1>
             <p>{settings.mission}</p>
             <div className="hero-actions">
               <Link className="button button-primary" href={lead ? `/articles/${lead.slug}` : "/categories/community-health"}>
-                Read Lead Story
+                {hpc.heroPrimaryBtn}
               </Link>
               <Link className="button button-ghost" href="/donate">
-                Support the Newsroom
+                {hpc.heroSecondaryBtn}
               </Link>
             </div>
           </div>
@@ -60,9 +70,9 @@ export default async function HomePage() {
         <section className="two-column-highlight">
           <div>
             <SectionHeading
-              eyebrow="Top Stories"
-              title="Latest reporting from the newsroom"
-              description="Coverage shaped by local realities, practical health questions, and public service value."
+              eyebrow={hpc.topStoriesEyebrow}
+              title={hpc.topStoriesTitle}
+              description={hpc.topStoriesDescription}
             />
           </div>
           <div className="mini-grid">
@@ -78,9 +88,9 @@ export default async function HomePage() {
 
         <section>
           <SectionHeading
-            eyebrow="Categories"
-            title="Coverage areas built for real community needs"
-            description="Each desk combines explainers, field reporting, and local service updates."
+            eyebrow={hpc.categoriesEyebrow}
+            title={hpc.categoriesTitle}
+            description={hpc.categoriesDescription}
           />
           <div className="category-grid">
             {categories.map((category) => (
@@ -96,9 +106,9 @@ export default async function HomePage() {
 
         <section>
           <SectionHeading
-            eyebrow="Latest Articles"
-            title="Fresh reporting across the newsroom"
-            description="A responsive article feed ready for desktop, tablet, and mobile reading."
+            eyebrow={hpc.latestEyebrow}
+            title={hpc.latestTitle}
+            description={hpc.latestDescription}
           />
           <div className="article-grid">
             {latest.map((article) => (
@@ -111,11 +121,17 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {settings.midSectionImage && safeCssUrl(settings.midSectionImage) ? (
+          <section className="mid-section-banner">
+            <img src={safeCssUrl(settings.midSectionImage)} alt="Featured banner" />
+          </section>
+        ) : null}
+
         <section className="video-section">
           <SectionHeading
-            eyebrow="Video Briefings"
-            title="Short explainers for readers on the move"
-            description="Use these modules for embedded journalism, sponsored health explainers, or outreach campaigns."
+            eyebrow={hpc.videoEyebrow}
+            title={hpc.videoTitle}
+            description={hpc.videoDescription}
           />
           <div className="video-grid">
             {videos.map((video) => (
@@ -140,7 +156,7 @@ export default async function HomePage() {
               <span>Funding goal</span>
             </div>
             <Link href="/donate" className="button button-primary">
-              Donate Now
+              {hpc.donateBtn}
             </Link>
           </div>
         </section>
@@ -148,17 +164,17 @@ export default async function HomePage() {
         <section className="bottom-grid">
           <div className="surface-elevated">
             <SectionHeading
-              eyebrow="Newsletter"
-              title="Receive the week’s most useful health reporting"
-              description="Newsletter signups are wired to Supabase when configured, with a zero-friction demo fallback during setup."
+              eyebrow={hpc.newsletterEyebrow}
+              title={hpc.newsletterTitle}
+              description={hpc.newsletterDescription}
             />
             <NewsletterForm />
           </div>
           <div className="surface-elevated">
             <SectionHeading
-              eyebrow="Contact"
-              title="Share a story tip, question, or correction"
-              description="This form stores submissions in Supabase once your project variables are connected."
+              eyebrow={hpc.contactEyebrow}
+              title={hpc.contactTitle}
+              description={hpc.contactDescription}
             />
             <ContactForm />
           </div>

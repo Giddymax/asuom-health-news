@@ -12,33 +12,28 @@ export async function SiteFooter() {
         <div>
           <h3>{settings.siteName}</h3>
           <p>{settings.mission}</p>
+          {settings.footerCopyright ? (
+            <small className="footer-copyright">{settings.footerCopyright}</small>
+          ) : null}
         </div>
         <div>
           <h4>Explore</h4>
           <ul>
-            <li>
-              <Link href="/categories/community-health">Community Health</Link>
-            </li>
-            <li>
-              <Link href="/categories/maternal-care">Maternal Care</Link>
-            </li>
-            <li>
-              <Link href="/categories/mental-health">Mental Health</Link>
-            </li>
+            {settings.footerExploreLinks.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href}>{item.label}</Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div>
           <h4>Newsroom</h4>
           <ul>
-            <li>
-              <Link href="/info/about">About</Link>
-            </li>
-            <li>
-              <Link href="/info/contact">Contact</Link>
-            </li>
-            <li>
-              <Link href="/info/advertise">Advertise</Link>
-            </li>
+            {settings.footerNewsroomLinks.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href}>{item.label}</Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div>
