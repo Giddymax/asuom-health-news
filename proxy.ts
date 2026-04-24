@@ -11,8 +11,15 @@ const key = new TextEncoder().encode(
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Let the login page and all API routes through without checking the token
-  if (pathname === "/admin/login" || pathname.startsWith("/api/")) {
+  // Login page — always clear any existing session so credentials are required fresh
+  if (pathname === "/admin/login") {
+    const response = NextResponse.next();
+    response.cookies.delete(COOKIE_NAME);
+    return response;
+  }
+
+  // API routes pass through untouched
+  if (pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 

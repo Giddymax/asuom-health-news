@@ -1,11 +1,7 @@
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { Container } from "@/components/ui/container";
-import { clearAdminSession } from "@/lib/auth";
 
 export default async function AdminLoginPage() {
-  // Always wipe any existing session — every visit requires fresh credentials
-  await clearAdminSession();
-
   return (
     <main className="admin-login-page">
       <Container className="admin-login-shell">
