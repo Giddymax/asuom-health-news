@@ -37,6 +37,10 @@ const hexPattern = /^#[0-9a-fA-F]{3,8}$/;
 function safeColor(value: string, fallback: string): string {
   return hexPattern.test(value) ? value : fallback;
 }
+function safeNum(value: number | undefined, fallback: number, min: number, max: number): number {
+  const n = typeof value === "number" && isFinite(value) ? value : fallback;
+  return Math.min(max, Math.max(min, n));
+}
 
 export default async function RootLayout({
   children
@@ -53,6 +57,10 @@ export default async function RootLayout({
   --bg: ${safeColor(theme.bg, "#f7faf7")};
   --surface: ${safeColor(theme.surface, "#ffffff")};
   --text: ${safeColor(theme.text, "#23312b")};
+  --hero-opacity: ${safeNum(settings.heroImageOpacity, 0.28, 0, 1)};
+  --img-contrast: ${safeNum(settings.imageContrast, 1.16, 1, 2)};
+  --img-saturation: ${safeNum(settings.imageSaturation, 1.2, 1, 2)};
+  --img-brightness: ${safeNum(settings.imageBrightness, 1.03, 0.8, 1.5)};
 }`;
 
   return (

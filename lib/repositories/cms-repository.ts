@@ -142,7 +142,11 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         ? { ...defaultHomepageContent, ...(data.homepage_content as object) }
         : defaultHomepageContent,
     metaDescription: data.meta_description || seedSettings.metaDescription,
-    ogImage: data.og_image ?? seedSettings.ogImage
+    ogImage: data.og_image ?? seedSettings.ogImage,
+    heroImageOpacity: typeof data.hero_image_opacity === "number" ? data.hero_image_opacity : seedSettings.heroImageOpacity,
+    imageContrast: typeof data.image_contrast === "number" ? data.image_contrast : seedSettings.imageContrast,
+    imageSaturation: typeof data.image_saturation === "number" ? data.image_saturation : seedSettings.imageSaturation,
+    imageBrightness: typeof data.image_brightness === "number" ? data.image_brightness : seedSettings.imageBrightness
   };
 }
 
@@ -492,7 +496,11 @@ export async function saveAdminContent(input: AdminContentInput) {
         footer_copyright: input.footerCopyright,
         homepage_content: input.homepageContent,
         meta_description: input.metaDescription,
-        og_image: input.ogImage
+        og_image: input.ogImage,
+        hero_image_opacity: input.heroImageOpacity,
+        image_contrast: input.imageContrast,
+        image_saturation: input.imageSaturation,
+        image_brightness: input.imageBrightness
       },
       existing?.id ? { onConflict: "id" } : undefined
     );

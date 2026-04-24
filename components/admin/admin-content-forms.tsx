@@ -164,7 +164,11 @@ export function AdminContentForms({
               contactDescription: hpc("contactDescription")
             },
             metaDescription: String(raw.metaDescription ?? ""),
-            ogImage: String(raw.ogImage ?? "")
+            ogImage: String(raw.ogImage ?? ""),
+            heroImageOpacity: Number(raw.heroImageOpacity ?? 0.28),
+            imageContrast: Number(raw.imageContrast ?? 1.16),
+            imageSaturation: Number(raw.imageSaturation ?? 1.2),
+            imageBrightness: Number(raw.imageBrightness ?? 1.03)
           }
         : mode === "donation"
           ? {
@@ -544,6 +548,11 @@ function SettingsFields({ settings, supabaseEnabled }: { settings: SiteSettings;
   const theme = settings.theme ?? defaultTheme;
   const hpc = settings.homepageContent ?? defaultHomepageContent;
 
+  const [heroOpacity, setHeroOpacity] = useState(settings.heroImageOpacity ?? 0.28);
+  const [imgContrast, setImgContrast] = useState(settings.imageContrast ?? 1.16);
+  const [imgSaturation, setImgSaturation] = useState(settings.imageSaturation ?? 1.2);
+  const [imgBrightness, setImgBrightness] = useState(settings.imageBrightness ?? 1.03);
+
   return (
     <>
       {/* ── Branding ── */}
@@ -727,6 +736,57 @@ function SettingsFields({ settings, supabaseEnabled }: { settings: SiteSettings;
         <textarea name="metaDescription" defaultValue={settings.metaDescription} rows={3} />
       </label>
       <ImageUploadField name="ogImage" label="Open Graph / Social Share Image" defaultValue={settings.ogImage} supabaseEnabled={supabaseEnabled} />
+
+      {/* ── Image Display ── */}
+      <p className="field-full admin-section-label">Image Display</p>
+      <label>
+        Hero Background Opacity
+        <div className="range-field">
+          <input
+            type="range" name="heroImageOpacity"
+            min="0" max="1" step="0.01"
+            value={heroOpacity}
+            onChange={(e) => setHeroOpacity(Number(e.target.value))}
+          />
+          <span className="range-value">{heroOpacity.toFixed(2)}</span>
+        </div>
+      </label>
+      <label>
+        Image Contrast
+        <div className="range-field">
+          <input
+            type="range" name="imageContrast"
+            min="1" max="2" step="0.01"
+            value={imgContrast}
+            onChange={(e) => setImgContrast(Number(e.target.value))}
+          />
+          <span className="range-value">{imgContrast.toFixed(2)}</span>
+        </div>
+      </label>
+      <label>
+        Image Saturation
+        <div className="range-field">
+          <input
+            type="range" name="imageSaturation"
+            min="1" max="2" step="0.01"
+            value={imgSaturation}
+            onChange={(e) => setImgSaturation(Number(e.target.value))}
+          />
+          <span className="range-value">{imgSaturation.toFixed(2)}</span>
+        </div>
+      </label>
+      <label>
+        Image Brightness
+        <div className="range-field">
+          <input
+            type="range" name="imageBrightness"
+            min="0.8" max="1.5" step="0.01"
+            value={imgBrightness}
+            onChange={(e) => setImgBrightness(Number(e.target.value))}
+          />
+          <span className="range-value">{imgBrightness.toFixed(2)}</span>
+        </div>
+      </label>
 
       {/* ── Colour Theme ── */}
       <p className="field-full admin-section-label">Colour Theme</p>

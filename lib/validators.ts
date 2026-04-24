@@ -126,7 +126,11 @@ export const adminContentSchema = z.discriminatedUnion("entityType", [
       contactDescription: z.string()
     }),
     metaDescription: z.string(),
-    ogImage: z.string()
+    ogImage: z.string(),
+    heroImageOpacity: z.coerce.number().min(0).max(1),
+    imageContrast: z.coerce.number().min(1).max(2),
+    imageSaturation: z.coerce.number().min(1).max(2),
+    imageBrightness: z.coerce.number().min(0.8).max(1.5)
   }),
   z.object({
     entityType: z.literal("donation"),

@@ -206,6 +206,10 @@ export type SiteSettings = {
   homepageContent: HomepageContent;
   metaDescription: string;
   ogImage: string;
+  heroImageOpacity: number;
+  imageContrast: number;
+  imageSaturation: number;
+  imageBrightness: number;
 };
 
 export type DashboardStats = {
@@ -279,6 +283,10 @@ export type AdminContentInput =
       homepageContent: HomepageContent;
       metaDescription: string;
       ogImage: string;
+      heroImageOpacity: number;
+      imageContrast: number;
+      imageSaturation: number;
+      imageBrightness: number;
     }
   | {
       entityType: "donation";

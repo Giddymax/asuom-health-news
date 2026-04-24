@@ -43,7 +43,11 @@ export const seedSettings: SiteSettings = {
   homepageContent: defaultHomepageContent,
   metaDescription:
     "Trusted community health journalism for families, health workers, and local leaders across Ghana.",
-  ogImage: ""
+  ogImage: "",
+  heroImageOpacity: 0.28,
+  imageContrast: 1.16,
+  imageSaturation: 1.2,
+  imageBrightness: 1.03
 };
 
 export const seedCategories: Category[] = [
