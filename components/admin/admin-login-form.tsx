@@ -37,7 +37,7 @@ export function AdminLoginForm() {
     <form className="admin-login-form" action={handleSubmit}>
       <label>
         Admin Email
-        <input type="email" name="email" placeholder="admin@asuomhealthnews.com" required />
+        <input type="email" name="email" placeholder="Email address" required />
       </label>
       <label>
         Password
