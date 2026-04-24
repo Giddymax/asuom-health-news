@@ -18,6 +18,9 @@ export function SessionGuard() {
       fetch("/api/admin/refresh", { method: "POST" }).catch(() => {});
     }
 
+    // Refresh immediately on mount so a short-lived token is extended before any action
+    refreshSession();
+
     function recordActivity() {
       const now = Date.now();
       lastActivityRef.current = now;

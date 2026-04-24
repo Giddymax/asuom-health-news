@@ -223,6 +223,11 @@ export function AdminContentForms({
       body: JSON.stringify(payload)
     });
 
+    if (response.status === 401) {
+      router.replace("/admin/login");
+      return;
+    }
+
     const data = (await response.json()) as { message?: string };
     setPending(false);
     setMessage(data.message ?? "Saved.");
@@ -346,6 +351,11 @@ export function AdminContentForms({
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ entityType: mode, slug: selectedSlug })
                 });
+
+                if (response.status === 401) {
+                  router.replace("/admin/login");
+                  return;
+                }
 
                 const data = (await response.json()) as { message?: string };
                 setPending(false);

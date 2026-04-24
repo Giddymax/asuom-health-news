@@ -26,7 +26,19 @@ export function VideoUploadField({ name, label, defaultValue = "" }: VideoUpload
 
     try {
       const res = await fetch("/api/admin/upload-video", { method: "POST", body: fd });
-      const data = (await res.json()) as { url?: string; message?: string };
+
+      let data: { url?: string; message?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setUploadError(`Upload failed (HTTP ${res.status}).`);
+        return;
+      }
+
+      if (res.status === 401) {
+        window.location.href = "/admin/login";
+        return;
+      }
 
       if (!res.ok) {
         setUploadError(data.message ?? "Upload failed.");
@@ -34,8 +46,8 @@ export function VideoUploadField({ name, label, defaultValue = "" }: VideoUpload
       }
 
       if (data.url) setValue(data.url);
-    } catch {
-      setUploadError("Upload failed. Check your connection.");
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Network error — check your connection.");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
