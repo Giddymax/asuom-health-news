@@ -35,7 +35,7 @@ export function ArticleAdminActions({ slug }: ArticleAdminActionsProps) {
 
   return (
     <div className="article-admin-actions">
-      <Link href={`/admin?mode=post&slug=${encodeURIComponent(slug)}`} className="article-admin-btn article-admin-edit">
+      <Link href={`/admin?mode=post&slug=${encodeURIComponent(slug)}#content-editor`} className="article-admin-btn article-admin-edit">
         Edit
       </Link>
       <button

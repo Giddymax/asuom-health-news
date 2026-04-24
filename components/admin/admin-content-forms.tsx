@@ -17,6 +17,8 @@ type AdminContentFormsProps = {
   settings: SiteSettings;
   donationCampaign: DonationCampaign;
   supabaseEnabled: boolean;
+  initialMode?: string;
+  initialSlug?: string;
 };
 
 type FormKind = "post" | "video" | "category" | "page" | "settings" | "donation";
@@ -46,6 +48,13 @@ function parseLinks(raw: FormDataEntryValue | undefined) {
   }
 }
 
+function resolveInitialMode(raw?: string): FormKind {
+  if (raw && raw in { post: 1, video: 1, category: 1, page: 1, settings: 1, donation: 1 }) {
+    return raw as FormKind;
+  }
+  return "post";
+}
+
 export function AdminContentForms({
   categories,
   posts,
@@ -53,11 +62,13 @@ export function AdminContentForms({
   videos,
   settings,
   donationCampaign,
-  supabaseEnabled
+  supabaseEnabled,
+  initialMode,
+  initialSlug
 }: AdminContentFormsProps) {
   const router = useRouter();
-  const [mode, setMode] = useState<FormKind>("post");
-  const [selectedSlug, setSelectedSlug] = useState("new");
+  const [mode, setMode] = useState<FormKind>(() => resolveInitialMode(initialMode));
+  const [selectedSlug, setSelectedSlug] = useState(() => initialSlug ?? "new");
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
 

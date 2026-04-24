@@ -12,9 +12,15 @@ import {
 } from "@/lib/repositories/cms-repository";
 import { formatDate, formatMoney } from "@/lib/utils";
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams
+}: {
+  searchParams: Promise<{ mode?: string; slug?: string }>;
+}) {
   const session = await getAdminSession();
   if (!session) redirect("/admin/login");
+
+  const { mode: initialMode, slug: initialSlug } = await searchParams;
 
   const [stats, snapshot, donations] = await Promise.all([
     getDashboardStats(),
@@ -98,7 +104,7 @@ export default async function AdminDashboardPage() {
           </div>
         </section>
 
-        <section className="surface-elevated">
+        <section id="content-editor" className="surface-elevated">
           <h2>Content Publishing</h2>
           <p className="muted">
             Create or edit articles, homepage videos, categories, pages, donation content, and
@@ -112,6 +118,8 @@ export default async function AdminDashboardPage() {
             settings={snapshot.settings}
             donationCampaign={snapshot.donationCampaign}
             supabaseEnabled={hasSupabase}
+            initialMode={initialMode}
+            initialSlug={initialSlug}
           />
         </section>
       </Container>
