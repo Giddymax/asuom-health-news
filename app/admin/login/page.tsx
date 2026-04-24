@@ -1,15 +1,10 @@
-import { redirect } from "next/navigation";
-
 import { AdminLoginForm } from "@/components/admin/admin-login-form";
 import { Container } from "@/components/ui/container";
-import { getAdminSession } from "@/lib/auth";
+import { clearAdminSession } from "@/lib/auth";
 
 export default async function AdminLoginPage() {
-  const session = await getAdminSession();
-
-  if (session) {
-    redirect("/admin");
-  }
+  // Always wipe any existing session — every visit requires fresh credentials
+  await clearAdminSession();
 
   return (
     <main className="admin-login-page">
