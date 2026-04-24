@@ -5,22 +5,24 @@ import { env } from "@/lib/env";
 
 const COOKIE_NAME = "ahn_admin_session";
 
+export const SESSION_DURATION_SECONDS = 30 * 60; // 30 minutes
+
 const key = new TextEncoder().encode(env.sessionSecret);
 
 export async function createAdminSession(email: string) {
   const token = await new SignJWT({ email, role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
     .sign(key);
 
   const store = await cookies();
+  // No maxAge — this becomes a session cookie the browser deletes on close
   store.set(COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7
+    path: "/"
   });
 }
 

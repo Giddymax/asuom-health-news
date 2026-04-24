@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { AdminContentForms } from "@/components/admin/admin-content-forms";
 import { ArticleAdminActions } from "@/components/admin/article-admin-actions";
+import { SessionGuard } from "@/components/admin/session-guard";
 import { Container } from "@/components/ui/container";
 import { getAdminSession } from "@/lib/auth";
 import { hasSupabase } from "@/lib/env";
@@ -30,6 +31,7 @@ export default async function AdminDashboardPage({
 
   return (
     <main className="admin-dashboard-page">
+      <SessionGuard />
       <Container className="stack-xl">
         <section className="admin-hero surface-elevated">
           <div>
