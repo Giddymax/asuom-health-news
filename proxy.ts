@@ -9,6 +9,13 @@ const key = new TextEncoder().encode(
 );
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Let the login page and all API routes through without checking the token
+  if (pathname === "/admin/login" || pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
   if (!token) {
@@ -19,7 +26,7 @@ export async function middleware(request: NextRequest) {
     await jwtVerify(token, key);
     return NextResponse.next();
   } catch {
-    // Token missing, expired, or tampered — clear cookie and send to login
+    // Token expired or tampered — clear cookie and send to login
     const response = NextResponse.redirect(new URL("/admin/login", request.url));
     response.cookies.delete(COOKIE_NAME);
     return response;
@@ -27,6 +34,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Runs on every /admin route except the login page and all API routes
-  matcher: ["/admin", "/admin/((?!login).*)", "/admin/(?!login)"]
+  matcher: ["/admin/:path*"]
 };
