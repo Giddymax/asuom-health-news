@@ -8,7 +8,7 @@ const key = new TextEncoder().encode(
   process.env.SESSION_SECRET?.trim() || "development-session-secret-change-me"
 );
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Let the login page and all API routes through without checking the token
