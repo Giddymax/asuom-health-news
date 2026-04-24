@@ -73,6 +73,7 @@ export function VideoUploadField({ name, label, defaultValue = "" }: VideoUpload
           type="file"
           accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo"
           className="image-file-input"
+          aria-label={`Upload ${label} video file`}
           onChange={handleFileChange}
         />
         {value ? (

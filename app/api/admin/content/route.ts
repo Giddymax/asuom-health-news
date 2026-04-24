@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 import { getAdminSession } from "@/lib/auth";
@@ -20,6 +21,7 @@ export async function POST(request: Request) {
 
   try {
     await saveAdminContent(parsed.data);
+    revalidatePath("/", "layout");
     return NextResponse.json({ message: "Content saved successfully." });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to save content.";
@@ -43,6 +45,7 @@ export async function DELETE(request: Request) {
 
   try {
     await deleteAdminContent(parsed.data);
+    revalidatePath("/", "layout");
     return NextResponse.json({ message: "Content deleted successfully." });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to delete content.";

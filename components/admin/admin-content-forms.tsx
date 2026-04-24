@@ -257,7 +257,7 @@ export function AdminContentForms({
         </div>
       ) : null}
 
-      <div className="surface-elevated" style={{ marginBottom: 20 }}>
+      <div className="surface-elevated admin-picker-card">
         <div className="admin-picker">
           <label>
             Edit Existing

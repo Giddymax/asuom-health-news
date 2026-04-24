@@ -537,7 +537,7 @@ main {
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background-color: var(--swatch-color, #2ecc8e);
+  background-color: #2ecc8e;
 }
 
 .video-card {
@@ -812,6 +812,10 @@ label {
 
 .admin-tabs {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.admin-picker-card {
+  margin-bottom: 20px;
 }
 
 .admin-picker {

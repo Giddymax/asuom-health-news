@@ -11,8 +11,11 @@ const key = new TextEncoder().encode(
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Login page — always clear any existing session so credentials are required fresh
+  // Login page — clear any existing session on page load (GET) so fresh credentials
+  // are always required. Do NOT touch POST requests — those are the server action
+  // submitting the login form, which sets the new session cookie.
   if (pathname === "/admin/login") {
+    if (request.method !== "GET") return NextResponse.next();
     const response = NextResponse.next();
     response.cookies.delete(COOKIE_NAME);
     return response;

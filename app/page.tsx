@@ -1,4 +1,5 @@
-import type { CSSProperties } from "react";
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 
 import { ArticleCard } from "@/components/site/article-card";
@@ -96,7 +97,7 @@ export default async function HomePage() {
           <div className="category-grid">
             {categories.map((category) => (
               <Link key={category.id} href={`/categories/${category.slug}`} className="category-panel">
-                <span className="category-swatch" style={{ "--swatch-color": category.color } as CSSProperties} />
+                <span className="category-swatch" style={{ backgroundColor: category.color }} />
                 <h3>{category.name}</h3>
                 <p>{category.description}</p>
                 <strong>{category.statsLabel}</strong>

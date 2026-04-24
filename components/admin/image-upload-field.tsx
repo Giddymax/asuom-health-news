@@ -76,6 +76,7 @@ export function ImageUploadField({ name, label, defaultValue = "", supabaseEnabl
               type="file"
               accept="image/*"
               className="image-file-input"
+              aria-label={`Upload ${label} image file`}
               onChange={handleFileChange}
             />
           </>
