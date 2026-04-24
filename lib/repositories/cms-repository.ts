@@ -158,8 +158,8 @@ export async function listCategories(): Promise<Category[]> {
     .select("*")
     .order("name", { ascending: true });
 
-  if (error || !data?.length) return seedCategories;
-  return data.map(mapCategory);
+  if (error) return seedCategories;
+  return (data ?? []).map(mapCategory);
 }
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
@@ -182,8 +182,8 @@ export async function listPublishedArticles(): Promise<Article[]> {
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
-  if (error || !data?.length) return seedArticles;
-  return (data as unknown as PostRow[]).map(mapPost);
+  if (error) return seedArticles;
+  return (data ?? []).map((row) => mapPost(row as unknown as PostRow));
 }
 
 export async function listAllArticles(): Promise<Article[]> {
@@ -198,8 +198,8 @@ export async function listAllArticles(): Promise<Article[]> {
     )
     .order("published_at", { ascending: false });
 
-  if (error || !data?.length) return seedArticles;
-  return (data as unknown as PostRow[]).map(mapPost);
+  if (error) return seedArticles;
+  return (data ?? []).map((row) => mapPost(row as unknown as PostRow));
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
@@ -227,9 +227,9 @@ export async function listVideos(): Promise<Video[]> {
     .select("*")
     .order("published_at", { ascending: false });
 
-  if (error || !data?.length) return seedVideos;
+  if (error) return seedVideos;
 
-  return data.map((row) => ({
+  return (data ?? []).map((row) => ({
     id: row.id,
     slug: row.slug,
     title: row.title,
@@ -259,9 +259,9 @@ export async function listInfoPages(): Promise<InfoPage[]> {
   if (!serviceClient) return seedPages;
 
   const { data, error } = await serviceClient.from("pages").select("*").order("title");
-  if (error || !data?.length) return seedPages;
+  if (error) return seedPages;
 
-  return data.map((row) => ({
+  return (data ?? []).map((row) => ({
     id: row.id,
     slug: row.slug,
     title: row.title,
