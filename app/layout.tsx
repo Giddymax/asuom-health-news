@@ -10,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const base = new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
   const description = settings.metaDescription || settings.mission;
+  const logoUrl = settings.logoImage || "/images/brand/ahn.jpg";
 
   return {
     metadataBase: base,
@@ -18,6 +19,11 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${settings.siteName}`
     },
     description,
+    icons: {
+      icon: logoUrl,
+      shortcut: logoUrl,
+      apple: logoUrl
+    },
     openGraph: {
       title: settings.siteName,
       description,
