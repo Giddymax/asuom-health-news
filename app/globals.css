@@ -1045,6 +1045,7 @@ label {
   gap: 10px;
 }
 
+/* ── Tablet (≤1080px) ── */
 @media (max-width: 1080px) {
   .hero-grid,
   .two-column-highlight,
@@ -1066,20 +1067,85 @@ label {
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
-@media (max-width: 760px) {
-  .header-shell,
-  .main-nav,
-  .header-actions {
-    flex-wrap: wrap;
+  /* Stack the donation / admin hero banners vertically */
+  .donation-callout,
+  .admin-hero {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
+  .donation-stats {
+    width: 100%;
+    min-width: unset;
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+  }
+}
+
+/* ── Mobile (≤760px) ── */
+@media (max-width: 760px) {
+  /* ── Container ── */
+  .container {
+    width: min(1180px, calc(100% - 20px));
+  }
+
+  /* ── Spacing ── */
+  .stack-xl {
+    gap: 40px;
+    padding-block: 40px;
+  }
+
+  /* ── Header ── */
+  .header-shell {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    min-height: unset;
+    padding: 12px 0;
+    gap: 10px;
+  }
+
+  /* Brand stays left, actions stay right on the same row */
+  .brand-mark {
+    flex: 1;
+  }
+
+  /* Nav drops to its own full-width row and scrolls horizontally */
+  .main-nav {
+    order: 3;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 14px;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .main-nav a {
+    white-space: nowrap;
+    font-size: 0.85rem;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-actions .button {
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 0.85rem;
+  }
+
+  /* ── Grids → single column ── */
   .mini-grid,
   .article-grid,
   .video-grid,
   .category-grid,
-  .stats-grid,
   .footer-grid,
   .gallery-grid,
   .field-grid,
@@ -1087,10 +1153,12 @@ label {
     grid-template-columns: 1fr;
   }
 
-  .container {
-    width: min(1180px, calc(100% - 20px));
+  /* Stats stay 2-up on mobile — easier to scan than a single column */
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* ── Padding ── */
   .bottom-grid > *,
   .donation-summary,
   .prose-panel,
@@ -1101,6 +1169,136 @@ label {
   .surface-elevated,
   .donation-callout,
   .admin-hero {
-    padding: 22px;
+    padding: 20px;
+  }
+
+  /* ── Donation / admin hero stacking ── */
+  .donation-callout,
+  .admin-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .donation-stats {
+    width: 100%;
+    min-width: unset;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* ── Admin tabs ── */
+  .admin-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .admin-tabs button {
+    font-size: 0.82rem;
+    padding: 0 8px;
+  }
+
+  /* ── Admin article list rows ── */
+  .admin-list-row-article {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .article-admin-actions {
+    width: 100%;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  /* ── Section headings ── */
+  .section-heading h2 {
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+  }
+
+  /* ── Featured article card ── */
+  .article-card-featured h3 {
+    font-size: 1.4rem;
+  }
+
+  /* ── Session warning ── */
+  .session-warning {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    transform: none;
+    border-radius: var(--radius-md);
+    white-space: normal;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .session-warning-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ── Image / video upload controls ── */
+  .image-upload-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .image-upload-controls input[type="text"] {
+    min-width: unset;
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    padding: 36px 0;
+  }
+}
+
+/* ── Small phones (≤480px) ── */
+@media (max-width: 480px) {
+  /* ── Admin tabs → 2 columns ── */
+  .admin-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* ── Tighter global padding ── */
+  .bottom-grid > *,
+  .donation-summary,
+  .prose-panel,
+  .article-body,
+  .article-sidebar,
+  .admin-login-card,
+  .admin-intro,
+  .surface-elevated,
+  .donation-callout,
+  .admin-hero {
+    padding: 16px;
+  }
+
+  /* ── Hero heading ── */
+  .hero-copy h1 {
+    font-size: 2.2rem;
+  }
+
+  .article-hero h1,
+  .category-hero h1,
+  .simple-hero h1,
+  .admin-login-page h1 {
+    font-size: 2rem;
+  }
+
+  /* ── Donation stats → full stack ── */
+  .donation-stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Smaller section gap ── */
+  .stack-xl {
+    gap: 32px;
+    padding-block: 32px;
+  }
+
+  /* ── Ticker ── */
+  .ticker-label {
+    display: none;
   }
 }
