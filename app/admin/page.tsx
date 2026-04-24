@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { AdminContentForms } from "@/components/admin/admin-content-forms";
+import { ArticleAdminActions } from "@/components/admin/article-admin-actions";
 import { Container } from "@/components/ui/container";
 import { getAdminSession } from "@/lib/auth";
 import { hasSupabase } from "@/lib/env";
@@ -64,12 +65,12 @@ export default async function AdminDashboardPage() {
             <h2>Recent Published Articles</h2>
             <div className="admin-list">
               {snapshot.posts.slice(0, 5).map((article) => (
-                <div key={article.id} className="admin-list-row">
-                  <div>
+                <div key={article.id} className="admin-list-row admin-list-row-article">
+                  <div className="admin-list-row-info">
                     <strong>{article.title}</strong>
-                    <span>{article.author}</span>
+                    <span>{article.author} &middot; {formatDate(article.publishedAt)}</span>
                   </div>
-                  <small>{formatDate(article.publishedAt)}</small>
+                  <ArticleAdminActions slug={article.slug} />
                 </div>
               ))}
             </div>

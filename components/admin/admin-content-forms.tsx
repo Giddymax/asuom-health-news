@@ -7,6 +7,7 @@ import type { Article, Category, DonationCampaign, HomepageContent, InfoPage, Si
 import { defaultHomepageContent, defaultTheme } from "@/lib/types";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LinksEditor } from "@/components/admin/links-editor";
+import { VideoUploadField } from "@/components/admin/video-upload-field";
 
 type AdminContentFormsProps = {
   categories: Category[];
@@ -431,10 +432,6 @@ function VideoFields({ categories, video, supabaseEnabled }: { categories: Categ
         <input name="duration" defaultValue={video?.duration ?? "5:00"} required />
       </label>
       <label>
-        Video URL
-        <input name="videoUrl" type="url" defaultValue={video?.videoUrl ?? ""} required />
-      </label>
-      <label>
         Category
         <select name="categorySlug" defaultValue={video?.categorySlug ?? categories[0]?.slug ?? ""} required>
           {categories.map((c) => (
@@ -456,6 +453,11 @@ function VideoFields({ categories, video, supabaseEnabled }: { categories: Categ
         label="Thumbnail"
         defaultValue={video?.thumbnail ?? "/images/placeholders/video-postnatal.svg"}
         supabaseEnabled={supabaseEnabled}
+      />
+      <VideoUploadField
+        name="videoUrl"
+        label="Video File"
+        defaultValue={video?.videoUrl ?? ""}
       />
     </>
   );

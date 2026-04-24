@@ -204,8 +204,8 @@ main {
 
 .ticker-label {
   flex: 0 0 auto;
-  background: white;
-  color: var(--primary-dark);
+  background: #dc2626;
+  color: #ffffff;
   border-radius: 999px;
   padding: 6px 10px;
   font-size: 0.7rem;
@@ -532,6 +532,7 @@ main {
   width: 46px;
   height: 46px;
   border-radius: 14px;
+  background-color: var(--swatch-color, #2ecc8e);
 }
 
 .video-card {
@@ -887,6 +888,85 @@ label {
 .admin-list-row strong {
   display: block;
   margin-bottom: 4px;
+}
+
+.admin-list-row-article {
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-list-row-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-list-row-info strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Article admin actions (edit / delete bar on cards and list rows) */
+.article-admin-actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.article-admin-btn {
+  flex: 1;
+  text-align: center;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.article-admin-edit {
+  color: var(--secondary);
+}
+
+.article-admin-edit:hover {
+  background: var(--surface-strong);
+  border-color: rgba(21, 58, 40, 0.3);
+}
+
+.article-admin-delete {
+  color: #9f1c13;
+  border-color: rgba(180, 35, 24, 0.15);
+  background: rgba(180, 35, 24, 0.04);
+}
+
+.article-admin-delete:hover:not(:disabled) {
+  background: rgba(180, 35, 24, 0.1);
+}
+
+.article-admin-delete:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Video preview in admin upload field */
+.video-preview-wrap {
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: var(--surface-strong);
+}
+
+.video-preview-wrap video {
+  width: 100%;
+  max-height: 220px;
+  display: block;
 }
 
 .site-footer {

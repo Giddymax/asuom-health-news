@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,9 +9,10 @@ type ArticleCardProps = {
   article: Article;
   category?: Category | null;
   featured?: boolean;
+  adminActions?: ReactNode;
 };
 
-export function ArticleCard({ article, category, featured = false }: ArticleCardProps) {
+export function ArticleCard({ article, category, featured = false, adminActions }: ArticleCardProps) {
   return (
     <article className={featured ? "article-card article-card-featured" : "article-card"}>
       <Link href={`/articles/${article.slug}`} className="article-media">
@@ -31,6 +32,7 @@ export function ArticleCard({ article, category, featured = false }: ArticleCard
           <span>{article.readTime}</span>
         </div>
       </div>
+      {adminActions}
     </article>
   );
 }
