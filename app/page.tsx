@@ -1,7 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 
-import { ArticleAdminActions } from "@/components/admin/article-admin-actions";
 import { ArticleCard } from "@/components/site/article-card";
 import { ContactForm } from "@/components/site/contact-form";
 import { NewsTicker } from "@/components/site/news-ticker";
@@ -9,7 +8,6 @@ import { NewsletterForm } from "@/components/site/newsletter-form";
 import { VideoCard } from "@/components/site/video-card";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { getAdminSession } from "@/lib/auth";
 import {
   getActiveDonationCampaign,
   getSiteSettings,
@@ -29,9 +27,6 @@ export default async function HomePage() {
     listVideos(),
     getActiveDonationCampaign()
   ]);
-
-  const session = await getAdminSession();
-  const isAdmin = !!session;
 
   const lead = featuredArticles[0] ?? allArticles[0];
   const secondary = featuredArticles.slice(1, 3);
@@ -67,14 +62,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="hero-panel surface-elevated">
-            {lead ? (
-              <ArticleCard
-                article={lead}
-                category={categories.find((item) => item.slug === lead.categorySlug)}
-                featured
-                adminActions={isAdmin ? <ArticleAdminActions slug={lead.slug} /> : undefined}
-              />
-            ) : null}
+            {lead ? <ArticleCard article={lead} category={categories.find((item) => item.slug === lead.categorySlug)} featured /> : null}
           </div>
         </Container>
       </section>
@@ -94,7 +82,6 @@ export default async function HomePage() {
                 key={article.id}
                 article={article}
                 category={categories.find((item) => item.slug === article.categorySlug)}
-                adminActions={isAdmin ? <ArticleAdminActions slug={article.slug} /> : undefined}
               />
             ))}
           </div>
@@ -130,7 +117,6 @@ export default async function HomePage() {
                 key={article.id}
                 article={article}
                 category={categories.find((item) => item.slug === article.categorySlug)}
-                adminActions={isAdmin ? <ArticleAdminActions slug={article.slug} /> : undefined}
               />
             ))}
           </div>
