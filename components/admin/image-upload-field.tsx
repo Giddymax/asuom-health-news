@@ -37,7 +37,7 @@ export function ImageUploadField({ name, label, defaultValue = "", supabaseEnabl
       }
 
       if (res.status === 401) {
-        window.location.href = "/admin/login";
+        setUploadError("Session expired — please save your work, then log in again.");
         return;
       }
 

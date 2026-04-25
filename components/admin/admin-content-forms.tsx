@@ -224,7 +224,8 @@ export function AdminContentForms({
     });
 
     if (response.status === 401) {
-      router.replace("/admin/login");
+      setPending(false);
+      setMessage("Session expired — please log in again. Your unsaved changes are still on this page.");
       return;
     }
 
