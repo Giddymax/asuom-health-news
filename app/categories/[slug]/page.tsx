@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

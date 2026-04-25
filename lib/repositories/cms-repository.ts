@@ -96,7 +96,7 @@ const mapPost = (row: PostRow): Article => ({
   status: row.status,
   featured: row.featured,
   featuredRank: row.featured_rank,
-  categorySlug: row.categories?.slug ?? seedCategories[0].slug,
+  categorySlug: row.categories?.slug ?? "",
   tags: row.tags ?? [],
   gallery: [],
   metaTitle: row.meta_title ?? undefined,
@@ -158,7 +158,7 @@ export async function listCategories(): Promise<Category[]> {
     .select("*")
     .order("name", { ascending: true });
 
-  if (error) return seedCategories;
+  if (error) return [];
   return (data ?? []).map(mapCategory);
 }
 
@@ -182,7 +182,7 @@ export async function listPublishedArticles(): Promise<Article[]> {
     .eq("status", "published")
     .order("published_at", { ascending: false });
 
-  if (error) return seedArticles;
+  if (error) return [];
   return (data ?? []).map((row) => mapPost(row as unknown as PostRow));
 }
 
@@ -198,7 +198,7 @@ export async function listAllArticles(): Promise<Article[]> {
     )
     .order("published_at", { ascending: false });
 
-  if (error) return seedArticles;
+  if (error) return [];
   return (data ?? []).map((row) => mapPost(row as unknown as PostRow));
 }
 
@@ -227,7 +227,7 @@ export async function listVideos(): Promise<Video[]> {
     .select("*")
     .order("published_at", { ascending: false });
 
-  if (error) return seedVideos;
+  if (error) return [];
 
   return (data ?? []).map((row) => ({
     id: row.id,
@@ -259,7 +259,7 @@ export async function listInfoPages(): Promise<InfoPage[]> {
   if (!serviceClient) return seedPages;
 
   const { data, error } = await serviceClient.from("pages").select("*").order("title");
-  if (error) return seedPages;
+  if (error) return [];
 
   return (data ?? []).map((row) => ({
     id: row.id,
