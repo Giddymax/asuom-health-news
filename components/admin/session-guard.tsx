@@ -14,8 +14,13 @@ export function SessionGuard() {
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    function refreshSession() {
-      fetch("/api/admin/refresh", { method: "POST" }).catch(() => {});
+    async function refreshSession() {
+      try {
+        const res = await fetch("/api/admin/refresh", { method: "POST" });
+        if (res.status === 401) router.replace("/admin/login");
+      } catch {
+        // Network error — let the idle timer handle redirection
+      }
     }
 
     // Refresh immediately on mount so a short-lived token is extended before any action
@@ -31,8 +36,18 @@ export function SessionGuard() {
       }
     }
 
+    function handleVisibilityChange() {
+      if (!document.hidden) {
+        const now = Date.now();
+        lastActivityRef.current = now;
+        lastRefreshRef.current = now;
+        refreshSession();
+      }
+    }
+
     const events = ["mousemove", "keydown", "click", "scroll", "touchstart"] as const;
     events.forEach((e) => window.addEventListener(e, recordActivity, { passive: true }));
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     const ticker = setInterval(() => {
       const idle = Date.now() - lastActivityRef.current;
@@ -55,6 +70,7 @@ export function SessionGuard() {
 
     return () => {
       events.forEach((e) => window.removeEventListener(e, recordActivity));
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       clearInterval(ticker);
     };
   }, [router]);
@@ -62,7 +78,9 @@ export function SessionGuard() {
   function extendSession() {
     lastActivityRef.current = Date.now();
     lastRefreshRef.current = Date.now();
-    fetch("/api/admin/refresh", { method: "POST" }).catch(() => {});
+    fetch("/api/admin/refresh", { method: "POST" })
+      .then((res) => { if (res.status === 401) router.replace("/admin/login"); })
+      .catch(() => {});
     setSecondsLeft(null);
   }
 
