@@ -201,6 +201,7 @@ main {
   background: linear-gradient(90deg, var(--primary), var(--primary-dark));
   color: white;
   overflow: hidden;
+  position: relative;
 }
 
 .ticker-label {
@@ -213,6 +214,8 @@ main {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.14em;
+  position: relative;
+  z-index: 1;
 }
 
 .ticker-track {
