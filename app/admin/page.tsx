@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { AdminContentForms } from "@/components/admin/admin-content-forms";
 import { ArticleAdminActions } from "@/components/admin/article-admin-actions";
+import { SeedDemoButton } from "@/components/admin/seed-demo-button";
 import { SessionGuard } from "@/components/admin/session-guard";
 import { Container } from "@/components/ui/container";
 import { getAdminSession } from "@/lib/auth";
@@ -105,6 +106,10 @@ export default async function AdminDashboardPage({
             </div>
           </div>
         </section>
+
+        {hasSupabase && snapshot.posts.length === 0 && snapshot.categories.length === 0 ? (
+          <SeedDemoButton />
+        ) : null}
 
         <section id="content-editor" className="surface-elevated">
           <h2>Content Publishing</h2>
