@@ -31,7 +31,7 @@ export async function SiteHeader() {
           ))}
         </nav>
         <div className="header-actions">
-          <Link href="/info/contact" className="button button-ghost">
+          <Link href="/info/contact" className="button button-primary">
             Contact
           </Link>
           <Link href="/admin/login" className="button button-primary">
