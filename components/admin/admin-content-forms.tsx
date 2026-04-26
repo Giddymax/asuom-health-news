@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import type { Article, Category, DonationCampaign, HomepageContent, InfoPage, SiteSettings, Video } from "@/lib/types";
 import { defaultHomepageContent, defaultTheme } from "@/lib/types";
+import { saveContentAction, deleteContentAction } from "@/app/admin/actions";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LinksEditor } from "@/components/admin/links-editor";
 import { VideoUploadField } from "@/components/admin/video-upload-field";
@@ -217,22 +218,10 @@ export function AdminContentForms({
                   entityType: mode
                 };
 
-    const response = await fetch("/api/admin/content", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    if (response.status === 401) {
-      setPending(false);
-      setMessage("Session expired — please log in again. Your unsaved changes are still on this page.");
-      return;
-    }
-
-    const data = (await response.json()) as { message?: string };
+    const result = await saveContentAction(payload);
     setPending(false);
-    setMessage(data.message ?? "Saved.");
-    if (response.ok) router.refresh();
+    setMessage(result.message);
+    if (result.ok) router.refresh();
   }
 
   function resetForMode(nextMode: FormKind) {
@@ -347,22 +336,11 @@ export function AdminContentForms({
                 setPending(true);
                 setMessage("");
 
-                const response = await fetch("/api/admin/content", {
-                  method: "DELETE",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ entityType: mode, slug: selectedSlug })
-                });
-
-                if (response.status === 401) {
-                  router.replace("/admin/login");
-                  return;
-                }
-
-                const data = (await response.json()) as { message?: string };
+                const result = await deleteContentAction({ entityType: mode, slug: selectedSlug });
                 setPending(false);
-                setMessage(data.message ?? "Deleted.");
+                setMessage(result.message);
 
-                if (response.ok) {
+                if (result.ok) {
                   setSelectedSlug("new");
                   router.refresh();
                 }

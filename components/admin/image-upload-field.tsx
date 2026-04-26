@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 
+import { uploadImageAction } from "@/app/admin/actions";
+
 type ImageUploadFieldProps = {
   name: string;
   label: string;
@@ -26,29 +28,14 @@ export function ImageUploadField({ name, label, defaultValue = "", supabaseEnabl
     fd.append("file", file);
 
     try {
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-
-      let data: { url?: string; message?: string } = {};
-      try {
-        data = await res.json();
-      } catch {
-        setUploadError(`Upload failed (HTTP ${res.status}).`);
-        return;
+      const result = await uploadImageAction(fd);
+      if (result.error) {
+        setUploadError(result.error);
+      } else if (result.url) {
+        setValue(result.url);
       }
-
-      if (res.status === 401) {
-        setUploadError("Session expired — please save your work, then log in again.");
-        return;
-      }
-
-      if (!res.ok) {
-        setUploadError(data.message ?? "Upload failed.");
-        return;
-      }
-
-      if (data.url) setValue(data.url);
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Network error — check your connection.");
+    } catch {
+      setUploadError("Upload failed — please try again.");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
