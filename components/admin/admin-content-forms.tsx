@@ -218,10 +218,15 @@ export function AdminContentForms({
                   entityType: mode
                 };
 
-    const result = await saveContentAction(payload);
-    setPending(false);
-    setMessage(result.message);
-    if (result.ok) router.refresh();
+    try {
+      const result = await saveContentAction(payload);
+      setMessage(result.message);
+      if (result.ok) router.refresh();
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Save failed — please try again.");
+    } finally {
+      setPending(false);
+    }
   }
 
   function resetForMode(nextMode: FormKind) {
@@ -336,13 +341,17 @@ export function AdminContentForms({
                 setPending(true);
                 setMessage("");
 
-                const result = await deleteContentAction({ entityType: mode, slug: selectedSlug });
-                setPending(false);
-                setMessage(result.message);
-
-                if (result.ok) {
-                  setSelectedSlug("new");
-                  router.refresh();
+                try {
+                  const result = await deleteContentAction({ entityType: mode, slug: selectedSlug });
+                  setMessage(result.message);
+                  if (result.ok) {
+                    setSelectedSlug("new");
+                    router.refresh();
+                  }
+                } catch (err) {
+                  setMessage(err instanceof Error ? err.message : "Delete failed — please try again.");
+                } finally {
+                  setPending(false);
                 }
               }}
             >

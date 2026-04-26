@@ -18,14 +18,25 @@ export async function proxy(request: NextRequest) {
   const headers = new Headers(request.headers);
   headers.delete("x-admin-email");
 
-  // Login page (GET): wipe the cookie so the form always starts clean
+  // Login page (GET): redirect authenticated users to admin, clear bad cookies
   if (pathname === "/admin/login") {
     if (request.method !== "GET") {
       return NextResponse.next({ request: { headers } });
     }
-    const res = NextResponse.next({ request: { headers } });
-    res.cookies.delete(COOKIE_NAME);
-    return res;
+    const token = request.cookies.get(COOKIE_NAME)?.value;
+    if (token) {
+      try {
+        await jwtVerify(token, key);
+        // Valid session — send them to the dashboard instead of wiping their login
+        return NextResponse.redirect(new URL("/admin", request.url));
+      } catch {
+        // Expired/invalid token — clear it and show the login page
+        const res = NextResponse.next({ request: { headers } });
+        res.cookies.delete(COOKIE_NAME);
+        return res;
+      }
+    }
+    return NextResponse.next({ request: { headers } });
   }
 
   // Login / logout API routes: pass through without auth

@@ -25,39 +25,47 @@ const ALLOWED_IMAGE_TYPES = new Set([
 export async function uploadImageAction(
   formData: FormData
 ): Promise<{ url?: string; error?: string }> {
-  const session = await getAdminSession();
-  if (!session) return { error: "Session expired — please log in again." };
+  try {
+    const session = await getAdminSession();
+    if (!session) return { error: "Session expired — please log in again." };
 
-  if (!hasSupabase) return { error: "Supabase is not configured." };
+    if (!hasSupabase) return { error: "Supabase is not configured." };
 
-  const file = formData.get("file");
-  if (!(file instanceof File)) return { error: "No file provided." };
+    const file = formData.get("file");
+    if (!(file instanceof File) && !(file instanceof Blob)) return { error: "No file provided." };
 
-  if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
-    return { error: "Only image files are allowed (JPEG, PNG, WebP, GIF, SVG, AVIF)." };
+    const fileType = file instanceof File ? file.type : (formData.get("fileType") as string) ?? "";
+    const fileName = file instanceof File ? file.name : "upload";
+
+    if (!ALLOWED_IMAGE_TYPES.has(fileType)) {
+      return { error: "Only image files are allowed (JPEG, PNG, WebP, GIF, SVG, AVIF)." };
+    }
+
+    if (file.size > MAX_IMAGE_BYTES) {
+      return { error: "File too large. Maximum 5 MB." };
+    }
+
+    const client = createClient(env.supabaseUrl, env.supabaseServiceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
+
+    const ext = fileName.split(".").pop()?.toLowerCase() ?? "jpg";
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const bytes = await file.arrayBuffer();
+
+    const { error } = await client.storage.from(IMAGE_BUCKET).upload(filename, bytes, {
+      contentType: fileType,
+      upsert: false
+    });
+
+    if (error) return { error: error.message };
+
+    const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(filename);
+    return { url: data.publicUrl };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Upload failed — please try again.";
+    return { error: message };
   }
-
-  if (file.size > MAX_IMAGE_BYTES) {
-    return { error: "File too large. Maximum 5 MB." };
-  }
-
-  const client = createClient(env.supabaseUrl, env.supabaseServiceRoleKey, {
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
-
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const bytes = await file.arrayBuffer();
-
-  const { error } = await client.storage.from(IMAGE_BUCKET).upload(filename, bytes, {
-    contentType: file.type,
-    upsert: false
-  });
-
-  if (error) return { error: error.message };
-
-  const { data } = client.storage.from(IMAGE_BUCKET).getPublicUrl(filename);
-  return { url: data.publicUrl };
 }
 
 // ─── Content save ─────────────────────────────────────────────────────────────
@@ -65,15 +73,17 @@ export async function uploadImageAction(
 export async function saveContentAction(
   payload: unknown
 ): Promise<{ ok: boolean; message: string }> {
-  const session = await getAdminSession();
-  if (!session) return { ok: false, message: "Session expired — please log in again." };
-
-  const parsed = adminContentSchema.safeParse(payload);
-  if (!parsed.success) {
-    return { ok: false, message: "The content form is incomplete or invalid." };
-  }
-
   try {
+    const session = await getAdminSession();
+    if (!session) return { ok: false, message: "Session expired — please log in again." };
+
+    const parsed = adminContentSchema.safeParse(payload);
+    if (!parsed.success) {
+      const firstError = parsed.error.errors[0];
+      const detail = firstError ? ` (${firstError.path.join(".")}: ${firstError.message})` : "";
+      return { ok: false, message: `The content form is incomplete or invalid.${detail}` };
+    }
+
     await saveAdminContent(parsed.data);
     revalidatePath("/", "layout");
     return { ok: true, message: "Content saved successfully." };
@@ -88,15 +98,15 @@ export async function saveContentAction(
 export async function deleteContentAction(
   params: unknown
 ): Promise<{ ok: boolean; message: string }> {
-  const session = await getAdminSession();
-  if (!session) return { ok: false, message: "Session expired — please log in again." };
-
-  const parsed = adminDeleteSchema.safeParse(params);
-  if (!parsed.success) {
-    return { ok: false, message: "The delete request is incomplete or invalid." };
-  }
-
   try {
+    const session = await getAdminSession();
+    if (!session) return { ok: false, message: "Session expired — please log in again." };
+
+    const parsed = adminDeleteSchema.safeParse(params);
+    if (!parsed.success) {
+      return { ok: false, message: "The delete request is incomplete or invalid." };
+    }
+
     await deleteAdminContent(parsed.data);
     revalidatePath("/", "layout");
     return { ok: true, message: "Content deleted successfully." };
