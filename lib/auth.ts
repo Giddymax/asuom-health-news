@@ -31,9 +31,20 @@ export async function clearAdminSession() {
   store.delete(COOKIE_NAME);
 }
 
-export async function getAdminSession() {
-  const store = await cookies();
-  const token = store.get(COOKIE_NAME)?.value;
+export async function getAdminSession(request?: Request) {
+  let token: string | undefined;
+
+  if (request) {
+    const cookieHeader = request.headers.get("cookie") ?? "";
+    token = cookieHeader
+      .split(";")
+      .map((c) => c.trim())
+      .find((c) => c.startsWith(`${COOKIE_NAME}=`))
+      ?.slice(COOKIE_NAME.length + 1);
+  } else {
+    const store = await cookies();
+    token = store.get(COOKIE_NAME)?.value;
+  }
 
   if (!token) return null;
 

@@ -6,7 +6,7 @@ import { deleteAdminContent, saveAdminContent } from "@/lib/repositories/cms-rep
 import { adminContentSchema, adminDeleteSchema } from "@/lib/validators";
 
 export async function POST(request: Request) {
-  const session = await getAdminSession();
+  const session = await getAdminSession(request);
 
   if (!session) {
     return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const session = await getAdminSession();
+  const session = await getAdminSession(request);
 
   if (!session) {
     return NextResponse.json({ message: "Unauthorized." }, { status: 401 });

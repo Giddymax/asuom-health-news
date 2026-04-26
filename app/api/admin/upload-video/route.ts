@@ -20,7 +20,7 @@ const ALLOWED_TYPES = new Set([
 
 export async function POST(request: Request) {
   try {
-    const session = await getAdminSession();
+    const session = await getAdminSession(request);
     if (!session) {
       return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
     }

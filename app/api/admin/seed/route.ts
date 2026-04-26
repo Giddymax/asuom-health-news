@@ -13,8 +13,8 @@ import {
   seedVideos
 } from "@/lib/repositories/seed-data";
 
-export async function POST() {
-  const session = await getAdminSession();
+export async function POST(request: Request) {
+  const session = await getAdminSession(request);
   if (!session) return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
 
   if (!hasSupabase) {
