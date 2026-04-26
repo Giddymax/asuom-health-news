@@ -5,7 +5,7 @@ import { env } from "@/lib/env";
 
 const COOKIE_NAME = "ahn_admin_session";
 
-export const SESSION_DURATION_SECONDS = 35 * 60; // 35 min — 5-min buffer above the 5-min client refresh throttle
+export const SESSION_DURATION_SECONDS = 35 * 60;
 
 const key = new TextEncoder().encode(env.sessionSecret);
 
@@ -31,26 +31,29 @@ export async function clearAdminSession() {
   store.delete(COOKIE_NAME);
 }
 
+/**
+ * In Route Handlers: pass the Request object.
+ *   The proxy already verified the JWT and put the email in x-admin-email.
+ *   We just read that header — no cookie parsing, no jose call needed.
+ *
+ * In Server Components / Server Actions: call with no argument.
+ *   cookies() from next/headers works reliably in that context.
+ */
 export async function getAdminSession(request?: Request) {
-  let token: string | undefined;
-
   if (request) {
-    const cookieHeader = request.headers.get("cookie") ?? "";
-    token = cookieHeader
-      .split(";")
-      .map((c) => c.trim())
-      .find((c) => c.startsWith(`${COOKIE_NAME}=`))
-      ?.slice(COOKIE_NAME.length + 1);
-  } else {
-    const store = await cookies();
-    token = store.get(COOKIE_NAME)?.value;
+    const email = request.headers.get("x-admin-email");
+    if (!email) return null;
+    return { email, role: "admin" };
   }
 
+  // Server Component / Server Action path
+  const store = await cookies();
+  const token = store.get(COOKIE_NAME)?.value;
   if (!token) return null;
 
   try {
-    const verified = await jwtVerify(token, key);
-    return verified.payload;
+    const { payload } = await jwtVerify(token, key);
+    return payload;
   } catch {
     return null;
   }

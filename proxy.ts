@@ -8,41 +8,57 @@ const key = new TextEncoder().encode(
   process.env.SESSION_SECRET?.trim() || "development-session-secret-change-me"
 );
 
+// Routes that never require an existing session
+const PUBLIC_API = new Set(["/api/admin/login", "/api/admin/logout"]);
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Login page — clear any existing session on page load (GET) so fresh credentials
-  // are always required. Do NOT touch POST requests — those are the server action
-  // submitting the login form, which sets the new session cookie.
+  // Always strip any incoming x-admin-email — prevents external forgery
+  const headers = new Headers(request.headers);
+  headers.delete("x-admin-email");
+
+  // Login page (GET): wipe the cookie so the form always starts clean
   if (pathname === "/admin/login") {
-    if (request.method !== "GET") return NextResponse.next();
-    const response = NextResponse.next();
-    response.cookies.delete(COOKIE_NAME);
-    return response;
+    if (request.method !== "GET") {
+      return NextResponse.next({ request: { headers } });
+    }
+    const res = NextResponse.next({ request: { headers } });
+    res.cookies.delete(COOKIE_NAME);
+    return res;
   }
 
-  // API routes pass through untouched
-  if (pathname.startsWith("/api/")) {
-    return NextResponse.next();
+  // Login / logout API routes: pass through without auth
+  if (PUBLIC_API.has(pathname)) {
+    return NextResponse.next({ request: { headers } });
   }
 
+  // All other /admin and /api/admin routes: verify the session cookie
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return pathname.startsWith("/api/")
+      ? NextResponse.json({ message: "Unauthorized." }, { status: 401 })
+      : NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
   try {
-    await jwtVerify(token, key);
-    return NextResponse.next();
+    const { payload } = await jwtVerify(token, key);
+    const email = typeof payload.email === "string" ? payload.email : "";
+    headers.set("x-admin-email", email);
+    return NextResponse.next({ request: { headers } });
   } catch {
-    // Token expired or tampered — clear cookie and send to login
-    const response = NextResponse.redirect(new URL("/admin/login", request.url));
-    response.cookies.delete(COOKIE_NAME);
-    return response;
+    // Expired or tampered token
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+    }
+    const res = NextResponse.redirect(new URL("/admin/login", request.url));
+    res.cookies.delete(COOKIE_NAME);
+    return res;
   }
 }
 
 export const config = {
-  matcher: ["/admin/:path*"]
+  // Cover both admin pages and admin API routes
+  matcher: ["/admin/:path*", "/api/admin/:path*"]
 };
