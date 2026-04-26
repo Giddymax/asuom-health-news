@@ -32,10 +32,10 @@ export async function uploadImageAction(
     if (!hasSupabase) return { error: "Supabase is not configured." };
 
     const file = formData.get("file");
-    if (!(file instanceof File) && !(file instanceof Blob)) return { error: "No file provided." };
+    if (!(file instanceof File)) return { error: "No file provided." };
 
-    const fileType = file instanceof File ? file.type : (formData.get("fileType") as string) ?? "";
-    const fileName = file instanceof File ? file.name : "upload";
+    const fileType = file.type;
+    const fileName = file.name;
 
     if (!ALLOWED_IMAGE_TYPES.has(fileType)) {
       return { error: "Only image files are allowed (JPEG, PNG, WebP, GIF, SVG, AVIF)." };
