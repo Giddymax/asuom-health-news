@@ -551,23 +551,41 @@ main {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(241, 248, 244, 0.95));
   border: 1px solid var(--line);
   box-shadow: var(--shadow-base);
-  /* button reset */
-  appearance: none;
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  width: 100%;
-  /* instant tap on mobile — no gesture-detection delay */
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .video-thumb {
   position: relative;
   overflow: hidden;
   border-radius: 16px;
+  /* fixed ratio keeps the container the right size whether showing
+     the thumbnail button or the live iframe */
+  aspect-ratio: 16 / 9;
   box-shadow: 0 10px 36px rgba(18, 49, 34, 0.22), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
+  background: #000;
+}
+
+/* full-cover button that holds the thumbnail image */
+.video-play-btn {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* the iframe / <video> that replaces the thumbnail on play */
+.video-inline-player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000;
 }
 
 .video-play {
@@ -580,6 +598,7 @@ main {
   padding: 8px 12px;
   font-size: 0.8rem;
   font-weight: 700;
+  pointer-events: none;
 }
 
 /* ── Video modal ─────────────────────────────────────── */
