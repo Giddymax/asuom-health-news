@@ -558,6 +558,9 @@ main {
   font: inherit;
   color: inherit;
   width: 100%;
+  /* instant tap on mobile — no gesture-detection delay */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .video-thumb {
