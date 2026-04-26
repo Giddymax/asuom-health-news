@@ -62,7 +62,7 @@ export function VideoCard({ video }: VideoCardProps) {
               alt={video.title}
               fill
               sizes="(max-width: 760px) 100vw, 33vw"
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", pointerEvents: "none" }}
             />
             <span className="video-play">▶ Watch</span>
           </button>
