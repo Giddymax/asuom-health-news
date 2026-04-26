@@ -883,6 +883,11 @@ label {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
+.admin-editor {
+  display: grid;
+  gap: 20px;
+}
+
 .admin-picker-card {
   margin-bottom: 20px;
 }
@@ -1379,6 +1384,43 @@ label {
     min-width: unset;
   }
 
+  /* ── Video modal ── */
+  .video-modal-overlay {
+    padding: 8px;
+  }
+
+  .video-modal-close {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+    top: 8px;
+    right: 8px;
+  }
+
+  /* ── Admin picker ── */
+  .admin-picker {
+    padding: 16px;
+  }
+
+  .admin-picker label {
+    max-width: 100%;
+    display: block;
+  }
+
+  .admin-picker label select {
+    width: 100%;
+  }
+
+  /* ── Social / nav link rows in admin ── */
+  .social-link-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .social-link-row input {
+    min-width: unset;
+  }
+
   /* ── Footer ── */
   .site-footer {
     padding: 36px 0;
@@ -1432,5 +1474,26 @@ label {
   /* ── Ticker ── */
   .ticker-label {
     display: none;
+  }
+
+  /* ── Video modal → edge-to-edge on tiny screens ── */
+  .video-modal-overlay {
+    padding: 0;
+  }
+
+  .video-modal-inner {
+    border-radius: 0;
+    max-height: 100dvh;
+  }
+
+  /* ── Admin action buttons → full width stack ── */
+  .admin-action-row {
+    flex-direction: column;
+  }
+
+  .admin-action-row .button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
   }
 }
