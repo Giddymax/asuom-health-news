@@ -281,7 +281,7 @@ main {
   border-radius: var(--radius-lg);
   aspect-ratio: 21 / 6;
   object-fit: cover;
-  filter: contrast(var(--img-contrast, 1)) saturate(var(--img-saturation, 1)) brightness(var(--img-brightness, 1));
+  filter: contrast(0.88) saturate(0.8);
   box-shadow: 0 14px 48px rgba(18, 49, 34, 0.26), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
 }
 
