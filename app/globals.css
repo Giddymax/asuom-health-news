@@ -444,6 +444,10 @@ main {
   filter: none;
 }
 
+.article-grid .article-media img {
+  filter: contrast(0.88) saturate(0.8);
+}
+
 .article-card:hover .article-media img,
 .video-card:hover img,
 .gallery-item:hover img {
