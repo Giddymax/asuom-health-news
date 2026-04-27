@@ -97,7 +97,13 @@ export default async function HomePage() {
           <div className="category-grid">
             {categories.map((category) => (
               <Link key={category.id} href={`/categories/${category.slug}`} className="category-panel">
-                <span className="category-swatch" style={{ backgroundColor: category.color }} />
+                {category.heroImage ? (
+                  <div className="category-img">
+                    <img src={category.heroImage} alt={category.name} />
+                  </div>
+                ) : (
+                  <span className="category-swatch" style={{ ["--swatch-color" as string]: category.color }} />
+                )}
                 <h3>{category.name}</h3>
                 <p>{category.description}</p>
                 <strong>{category.statsLabel}</strong>
