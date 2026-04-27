@@ -278,7 +278,7 @@ main {
   border-radius: var(--radius-lg);
   aspect-ratio: 21 / 6;
   object-fit: cover;
-  filter: contrast(var(--img-contrast, 1.16)) saturate(var(--img-saturation, 1.2)) brightness(var(--img-brightness, 1.03));
+  filter: contrast(var(--img-contrast, 1)) saturate(var(--img-saturation, 1)) brightness(var(--img-brightness, 1));
   box-shadow: 0 14px 48px rgba(18, 49, 34, 0.26), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
 }
 
@@ -436,7 +436,7 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: contrast(var(--img-contrast, 1.16)) saturate(var(--img-saturation, 1.2)) brightness(var(--img-brightness, 1.03));
+  filter: contrast(var(--img-contrast, 1)) saturate(var(--img-saturation, 1)) brightness(var(--img-brightness, 1));
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), filter 0.35s ease;
 }
 

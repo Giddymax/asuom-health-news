@@ -58,9 +58,9 @@ export default async function RootLayout({
   --surface: ${safeColor(theme.surface, "#ffffff")};
   --text: ${safeColor(theme.text, "#23312b")};
   --hero-opacity: ${safeNum(settings.heroImageOpacity, 0.28, 0, 1)};
-  --img-contrast: ${safeNum(settings.imageContrast, 1.16, 1, 2)};
-  --img-saturation: ${safeNum(settings.imageSaturation, 1.2, 1, 2)};
-  --img-brightness: ${safeNum(settings.imageBrightness, 1.03, 0.8, 1.5)};
+  --img-contrast: ${safeNum(settings.imageContrast, 1, 0.5, 2)};
+  --img-saturation: ${safeNum(settings.imageSaturation, 1, 0.5, 2)};
+  --img-brightness: ${safeNum(settings.imageBrightness, 1, 0.5, 1.5)};
 }`;
 
   return (
