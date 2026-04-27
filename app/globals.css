@@ -440,6 +440,10 @@ main {
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), filter 0.35s ease;
 }
 
+.article-card-featured .article-media img {
+  filter: none;
+}
+
 .article-card:hover .article-media img,
 .video-card:hover img,
 .gallery-item:hover img {
