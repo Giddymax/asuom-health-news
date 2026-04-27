@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 
 import type { Video } from "@/lib/types";
@@ -27,46 +27,57 @@ function toEmbedSrc(url: string): { kind: "iframe" | "video"; src: string } {
 
 export function VideoCard({ video }: VideoCardProps) {
   const [playing, setPlaying] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const embed = toEmbedSrc(video.videoUrl);
+
+  function handlePlay() {
+    // Must set src/call play() synchronously inside the event handler.
+    // iOS Safari ties autoplay permission to the user gesture — React's async
+    // re-render breaks that chain, so we bypass it with a direct DOM ref.
+    if (embed.kind === "iframe" && iframeRef.current) {
+      iframeRef.current.src = embed.src;
+    } else if (embed.kind === "video" && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+    setPlaying(true);
+  }
 
   return (
     <div className="video-card">
       <div className="video-thumb">
-        {playing ? (
-          embed.kind === "video" ? (
-            <video
-              src={embed.src}
-              controls
-              autoPlay
-              playsInline
-              className="video-inline-player"
-            />
-          ) : (
-            <iframe
-              src={embed.src}
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-              className="video-inline-player"
-              title={video.title}
-            />
-          )
+        {embed.kind === "video" ? (
+          <video
+            ref={videoRef}
+            src={embed.src}
+            controls
+            playsInline
+            className={`video-inline-player${playing ? "" : " video-player-hidden"}`}
+          />
         ) : (
-          <button
-            type="button"
-            className="video-play-btn"
-            onClick={() => setPlaying(true)}
-            aria-label={`Play ${video.title}`}
-          >
-            <Image
-              src={video.thumbnail}
-              alt={video.title}
-              fill
-              sizes="(max-width: 760px) 100vw, 33vw"
-              style={{ objectFit: "cover", pointerEvents: "none" }}
-            />
-            <span className="video-play">▶ Watch</span>
-          </button>
+          <iframe
+            ref={iframeRef}
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allowFullScreen
+            className={`video-inline-player${playing ? "" : " video-player-hidden"}`}
+            title={video.title}
+          />
         )}
+        <button
+          type="button"
+          className={`video-play-btn${playing ? " video-play-btn-hidden" : ""}`}
+          onClick={handlePlay}
+          aria-label={`Play ${video.title}`}
+        >
+          <Image
+            src={video.thumbnail}
+            alt={video.title}
+            fill
+            sizes="(max-width: 760px) 100vw, 33vw"
+            style={{ objectFit: "cover", pointerEvents: "none" }}
+          />
+          <span className="video-play">▶ Watch</span>
+        </button>
       </div>
       <div className="video-copy">
         <h3>{video.title}</h3>

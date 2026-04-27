@@ -11,6 +11,9 @@ type InfoPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+const safeCssUrl = (v: string) =>
+  /^(https?:\/\/|\/)[^\s"';<>{}|\\^`[\]]*$/.test(v) ? v : "";
+
 export default async function InfoPage({ params }: InfoPageProps) {
   const { slug } = await params;
   const page = await getInfoPageBySlug(slug);
@@ -20,6 +23,12 @@ export default async function InfoPage({ params }: InfoPageProps) {
   return (
     <main>
       <section className="simple-hero">
+        {page.heroImage && safeCssUrl(page.heroImage) ? (
+          <>
+            <style dangerouslySetInnerHTML={{ __html: `.simple-hero-bg{background-image:url("${safeCssUrl(page.heroImage)}")}` }} />
+            <div className="simple-hero-bg" />
+          </>
+        ) : null}
         <Container>
           <span className="eyebrow">Information</span>
           <h1>{page.title}</h1>

@@ -249,13 +249,15 @@ main {
 }
 
 .hero-section,
-.category-hero {
+.category-hero,
+.simple-hero {
   position: relative;
   overflow: hidden;
 }
 
 .hero-bg,
-.category-hero-bg {
+.category-hero-bg,
+.simple-hero-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
@@ -267,7 +269,8 @@ main {
 }
 
 .hero-section > *:not(.hero-bg),
-.category-hero > *:not(.category-hero-bg) {
+.category-hero > *:not(.category-hero-bg),
+.simple-hero > *:not(.simple-hero-bg) {
   position: relative;
   z-index: 1;
 }
@@ -608,6 +611,16 @@ main {
 
 /* stop the img from swallowing taps on iOS Safari */
 .video-play-btn img {
+  pointer-events: none;
+}
+
+.video-player-hidden {
+  display: none;
+  pointer-events: none;
+}
+
+.video-play-btn-hidden {
+  display: none;
   pointer-events: none;
 }
 
