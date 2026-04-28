@@ -1,8 +1,3 @@
-"use client";
-
-import { useState } from "react";
-import Image from "next/image";
-
 import type { Video } from "@/lib/types";
 
 type VideoCardProps = {
@@ -12,7 +7,6 @@ type VideoCardProps = {
 function toEmbedSrc(url: string): { kind: "iframe" | "video"; src: string } {
   const yt = url.match(/(?:youtube\.com\/watch[?&]v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
   if (yt) {
-    // playsinline=1 keeps video in-page on iOS instead of opening the YouTube app
     return { kind: "iframe", src: `https://www.youtube.com/embed/${yt[1]}?rel=0&playsinline=1` };
   }
   if (url.includes("youtube.com/embed/")) {
@@ -27,52 +21,28 @@ function toEmbedSrc(url: string): { kind: "iframe" | "video"; src: string } {
 }
 
 export function VideoCard({ video }: VideoCardProps) {
-  const [playing, setPlaying] = useState(false);
   const embed = toEmbedSrc(video.videoUrl);
-
-  function handlePlay(e: React.MouseEvent | React.TouchEvent) {
-    e.preventDefault();
-    setPlaying(true);
-  }
 
   return (
     <div className="video-card">
       <div className="video-thumb">
-        {playing ? (
-          embed.kind === "video" ? (
-            <video
-              src={embed.src}
-              controls
-              autoPlay
-              playsInline
-              className="video-inline-player"
-            />
-          ) : (
-            <iframe
-              src={embed.src}
-              allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-              className="video-inline-player"
-              title={video.title}
-            />
-          )
+        {embed.kind === "video" ? (
+          <video
+            src={embed.src}
+            controls
+            playsInline
+            className="video-inline-player"
+            poster={video.thumbnail}
+          />
         ) : (
-          <button
-            type="button"
-            className="video-play-btn"
-            onClick={handlePlay}
-            onTouchEnd={handlePlay}
-            aria-label={`Play ${video.title}`}
-          >
-            <Image
-              src={video.thumbnail}
-              alt={video.title}
-              fill
-              sizes="(max-width: 760px) 100vw, 33vw"
-              style={{ objectFit: "cover", pointerEvents: "none" }}
-            />
-            <span className="video-play">▶ Watch</span>
-          </button>
+          <iframe
+            src={embed.src}
+            loading="lazy"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allowFullScreen
+            className="video-inline-player"
+            title={video.title}
+          />
         )}
       </div>
       <div className="video-copy">

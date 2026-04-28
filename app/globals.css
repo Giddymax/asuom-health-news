@@ -592,33 +592,9 @@ main {
   padding-top: 56.25%;
   box-shadow: 0 10px 36px rgba(18, 49, 34, 0.22), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
   background: #000;
-  /* iOS Safari: cursor:pointer on the overflow:hidden parent is required
-     for touch events to reach absolutely-positioned children */
-  cursor: pointer;
 }
 
-/* full-cover button that holds the thumbnail image */
-.video-play-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* stop the img from swallowing taps on iOS Safari */
-.video-play-btn img {
-  pointer-events: none;
-}
-
-
-/* the iframe / <video> that replaces the thumbnail on play */
+/* the iframe / <video> embedded directly in the thumb */
 .video-inline-player {
   position: absolute;
   top: 0;
@@ -629,19 +605,6 @@ main {
   height: 100%;
   border: none;
   background: #000;
-}
-
-.video-play {
-  position: absolute;
-  left: 16px;
-  bottom: 16px;
-  background: rgba(21, 58, 40, 0.78);
-  color: white;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  pointer-events: none;
 }
 
 /* ── Video modal ─────────────────────────────────────── */
