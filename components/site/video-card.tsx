@@ -30,6 +30,11 @@ export function VideoCard({ video }: VideoCardProps) {
   const [playing, setPlaying] = useState(false);
   const embed = toEmbedSrc(video.videoUrl);
 
+  function handlePlay(e: React.MouseEvent | React.TouchEvent) {
+    e.preventDefault();
+    setPlaying(true);
+  }
+
   return (
     <div className="video-card">
       <div className="video-thumb">
@@ -55,7 +60,8 @@ export function VideoCard({ video }: VideoCardProps) {
           <button
             type="button"
             className="video-play-btn"
-            onClick={() => setPlaying(true)}
+            onClick={handlePlay}
+            onTouchEnd={handlePlay}
             aria-label={`Play ${video.title}`}
           >
             <Image

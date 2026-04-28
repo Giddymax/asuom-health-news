@@ -592,6 +592,9 @@ main {
   padding-top: 56.25%;
   box-shadow: 0 10px 36px rgba(18, 49, 34, 0.22), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
   background: #000;
+  /* iOS Safari: cursor:pointer on the overflow:hidden parent is required
+     for touch events to reach absolutely-positioned children */
+  cursor: pointer;
 }
 
 /* full-cover button that holds the thumbnail image */
