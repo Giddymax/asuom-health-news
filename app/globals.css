@@ -606,7 +606,6 @@ main {
   border: none;
   cursor: pointer;
   touch-action: manipulation;
-  z-index: 2;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -615,15 +614,6 @@ main {
   pointer-events: none;
 }
 
-.video-player-hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.video-play-btn-hidden {
-  display: none;
-  pointer-events: none;
-}
 
 /* the iframe / <video> that replaces the thumbnail on play */
 .video-inline-player {
