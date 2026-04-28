@@ -21,31 +21,60 @@ export function VideoUploadField({ name, label, defaultValue = "" }: VideoUpload
     setUploading(true);
     setUploadError("");
 
-    const fd = new FormData();
-    fd.append("file", file);
-
     try {
-      const res = await fetch("/api/admin/upload-video", { method: "POST", body: fd });
+      // Ask the server for a signed upload URL (small JSON request, no file bytes)
+      const signRes = await fetch("/api/admin/sign-video-upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: file.name, type: file.type, size: file.size })
+      });
 
-      let data: { url?: string; message?: string } = {};
+      let signData: { signedUrl?: string; publicUrl?: string; useServerUpload?: boolean; message?: string } = {};
       try {
-        data = await res.json();
+        signData = await signRes.json();
       } catch {
-        setUploadError(`Upload failed (HTTP ${res.status}).`);
+        setUploadError(`Upload failed (HTTP ${signRes.status}).`);
         return;
       }
 
-      if (res.status === 401) {
+      if (signRes.status === 401) {
         setUploadError("Session expired — please save your work, then log in again.");
         return;
       }
 
-      if (!res.ok) {
-        setUploadError(data.message ?? "Upload failed.");
+      if (!signRes.ok) {
+        setUploadError(signData.message ?? "Upload failed.");
         return;
       }
 
-      if (data.url) setValue(data.url);
+      if (signData.useServerUpload) {
+        // Local dev fallback: send file through the Next.js route
+        const fd = new FormData();
+        fd.append("file", file);
+        const uploadRes = await fetch("/api/admin/upload-video", { method: "POST", body: fd });
+        let uploadData: { url?: string; message?: string } = {};
+        try { uploadData = await uploadRes.json(); } catch { /* ignore */ }
+        if (!uploadRes.ok) {
+          setUploadError(uploadData.message ?? "Upload failed.");
+          return;
+        }
+        if (uploadData.url) setValue(uploadData.url);
+        return;
+      }
+
+      // Upload the file directly to Supabase — bypasses Next.js body limits entirely
+      const uploadRes = await fetch(signData.signedUrl!, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type }
+      });
+
+      if (!uploadRes.ok) {
+        setUploadError(`Upload failed (HTTP ${uploadRes.status}).`);
+        return;
+      }
+
+      setValue(signData.publicUrl!);
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Network error — check your connection.");
     } finally {
