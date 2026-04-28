@@ -606,6 +606,7 @@ main {
   border: none;
   cursor: pointer;
   touch-action: manipulation;
+  z-index: 2;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -615,7 +616,7 @@ main {
 }
 
 .video-player-hidden {
-  display: none;
+  opacity: 0;
   pointer-events: none;
 }
 
