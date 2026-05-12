@@ -19,7 +19,10 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const article = await getArticleBySlug(slug);
   if (!article) return {};
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://asuomhealthnews.com").replace(/\/$/, "");
+  const coverImageUrl = article.coverImage.startsWith("http")
+    ? article.coverImage
+    : `${siteUrl}${article.coverImage}`;
 
   return {
     title: article.title,
@@ -29,20 +32,13 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       description: article.excerpt,
       type: "article",
       url: `${siteUrl}/articles/${slug}`,
-      images: [
-        {
-          url: article.coverImage,
-          width: 1200,
-          height: 800,
-          alt: article.title
-        }
-      ]
+      images: [{ url: coverImageUrl, width: 1200, height: 800, alt: article.title }]
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
       description: article.excerpt,
-      images: [article.coverImage]
+      images: [coverImageUrl]
     }
   };
 }

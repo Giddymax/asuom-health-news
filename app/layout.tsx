@@ -8,7 +8,7 @@ import "@/app/globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
-  const base = new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000");
+  const base = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://asuomhealthnews.com");
   const description = settings.metaDescription || settings.mission;
   const logoUrl = settings.logoImage || "/images/brand/ahn.jpg";
 
