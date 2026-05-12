@@ -34,8 +34,8 @@ export async function SiteHeader() {
           <Link href="/info/contact" className="button button-primary">
             Contact
           </Link>
-          <Link href="/admin/login" className="button button-primary">
-            Admin
+          <Link href="/donate" className="button button-primary">
+            Donate
           </Link>
         </div>
       </Container>
