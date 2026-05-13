@@ -47,6 +47,11 @@ export async function SiteFooter() {
               </li>
             ))}
             <li>
+              <a href="https://wa.me/233558813062" target="_blank" rel="noopener noreferrer">
+                WhatsApp Us
+              </a>
+            </li>
+            <li>
               <Link href="/admin/login">Dashboard Login</Link>
             </li>
           </ul>
