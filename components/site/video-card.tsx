@@ -1,4 +1,5 @@
 import type { Video } from "@/lib/types";
+import { VideoShareButton } from "@/components/site/video-share-button";
 
 type VideoCardProps = {
   video: Video;
@@ -48,7 +49,10 @@ export function VideoCard({ video }: VideoCardProps) {
       <div className="video-copy">
         <h3>{video.title}</h3>
         <p>{video.excerpt}</p>
-        <strong>{video.duration}</strong>
+        <div className="video-meta-row">
+          <strong>{video.duration}</strong>
+          <VideoShareButton title={video.title} excerpt={video.excerpt} videoUrl={video.videoUrl} />
+        </div>
       </div>
     </div>
   );
