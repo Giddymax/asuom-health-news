@@ -470,6 +470,7 @@ main {
 .article-media {
   display: block;
   overflow: hidden;
+  aspect-ratio: 4 / 3;
   border-radius: var(--radius-md);
   background: var(--surface-strong);
   box-shadow: 0 10px 36px rgba(18, 49, 34, 0.22), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
@@ -555,6 +556,11 @@ main {
 
 .article-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.article-grid .article-media {
+  max-height: 190px;
+  border-radius: 16px;
 }
 
 .video-grid {
@@ -922,6 +928,40 @@ label {
 .sidebar-stack {
   display: grid;
   gap: 18px;
+}
+
+.sidebar-stack .article-card {
+  grid-template-columns: 136px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.sidebar-stack .article-media {
+  aspect-ratio: 1 / 0.78;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(18, 49, 34, 0.16), inset 0 0 0 1px rgba(21, 58, 40, 0.08);
+}
+
+.sidebar-stack .article-copy {
+  gap: 8px;
+}
+
+.sidebar-stack .pill {
+  padding: 5px 8px;
+  font-size: 0.62rem;
+}
+
+.sidebar-stack .article-copy h3 {
+  font-size: 0.95rem;
+}
+
+.sidebar-stack .article-copy p {
+  display: none;
+}
+
+.sidebar-stack .article-meta {
+  gap: 8px;
+  font-size: 0.72rem;
 }
 
 .gallery-grid {
@@ -1531,6 +1571,14 @@ label {
 
   .article-gallery-admin-item {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar-stack .article-card {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .sidebar-stack .article-copy h3 {
+    font-size: 0.9rem;
   }
 
   /* ── Video modal ── */
