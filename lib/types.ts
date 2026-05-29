@@ -229,6 +229,7 @@ export type AdminContentInput =
       categorySlug: string;
       author: string;
       coverImage: string;
+      gallery: GalleryItem[];
       status: PublishStatus;
       featured: boolean;
       featuredRank: number;

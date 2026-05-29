@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { Article, Category, DonationCampaign, HomepageContent, InfoPage, SiteSettings, Video } from "@/lib/types";
 import { defaultHomepageContent, defaultTheme } from "@/lib/types";
 import { saveContentAction, deleteContentAction } from "@/app/admin/actions";
+import { ArticleGalleryField } from "@/components/admin/article-gallery-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LinksEditor } from "@/components/admin/links-editor";
 import { VideoUploadField } from "@/components/admin/video-upload-field";
@@ -44,6 +45,23 @@ function parseLinks(raw: FormDataEntryValue | undefined) {
   try {
     const parsed = JSON.parse(String(raw ?? "[]"));
     return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function parseGallery(raw: FormDataEntryValue | undefined) {
+  try {
+    const parsed = JSON.parse(String(raw ?? "[]"));
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .map((item, index) => ({
+        id: String(item?.id || `gallery-${index + 1}`),
+        image: String(item?.image ?? "").trim(),
+        alt: String(item?.alt ?? "").trim()
+      }))
+      .filter((item) => item.image);
   } catch {
     return [];
   }
@@ -208,6 +226,7 @@ export function AdminContentForms({
                   categorySlug: String(raw.categorySlug ?? ""),
                   author: String(raw.author ?? ""),
                   coverImage: String(raw.coverImage ?? ""),
+                  gallery: parseGallery(raw.galleryJson),
                   status: String(raw.status ?? "draft"),
                   featured: raw.featured === "on",
                   featuredRank: Number(raw.featuredRank ?? 0),
@@ -417,6 +436,7 @@ function PostFields({ categories, post, supabaseEnabled }: { categories: Categor
         defaultValue={post?.coverImage ?? "/images/placeholders/clinic.svg"}
         supabaseEnabled={supabaseEnabled}
       />
+      <ArticleGalleryField defaultItems={post?.gallery ?? []} supabaseEnabled={supabaseEnabled} />
       <label className="field-full">
         Content
         <textarea name="content" defaultValue={post?.body?.join("\n\n") ?? ""} rows={12} required />

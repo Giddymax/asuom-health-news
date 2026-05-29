@@ -9,8 +9,8 @@ const REFRESH_THROTTLE_MS = 5 * 60 * 1000; // call refresh API at most every 5 m
 
 export function SessionGuard() {
   const router = useRouter();
-  const lastActivityRef = useRef(Date.now());
-  const lastRefreshRef = useRef(Date.now());
+  const lastActivityRef = useRef(0);
+  const lastRefreshRef = useRef(0);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
 
   useEffect(() => {
@@ -22,6 +22,10 @@ export function SessionGuard() {
         // Network error — let the idle timer handle redirection
       }
     }
+
+    const mountedAt = Date.now();
+    lastActivityRef.current = mountedAt;
+    lastRefreshRef.current = mountedAt;
 
     // Refresh immediately on mount so a short-lived token is extended before any action
     refreshSession();

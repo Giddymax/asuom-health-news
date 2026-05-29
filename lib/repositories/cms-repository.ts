@@ -48,6 +48,7 @@ type PostRow = {
   published_at: string;
   read_time_label: string;
   cover_image_path: string;
+  gallery: unknown;
   status: "draft" | "published";
   featured: boolean;
   featured_rank: number;
@@ -57,6 +58,25 @@ type PostRow = {
   categories: {
     slug: string;
   } | null;
+};
+
+const mapGallery = (raw: unknown, title: string) => {
+  if (!Array.isArray(raw)) return [];
+
+  return raw
+    .map((item, index) => {
+      if (!item || typeof item !== "object") return null;
+      const record = item as Record<string, unknown>;
+      const image = typeof record.image === "string" ? record.image.trim() : "";
+      if (!image) return null;
+
+      return {
+        id: typeof record.id === "string" && record.id ? record.id : `gallery-${index + 1}`,
+        image,
+        alt: typeof record.alt === "string" && record.alt ? record.alt : `${title} gallery image ${index + 1}`
+      };
+    })
+    .filter((item): item is { id: string; image: string; alt: string } => Boolean(item));
 };
 
 type CategoryRow = {
@@ -98,7 +118,7 @@ const mapPost = (row: PostRow): Article => ({
   featuredRank: row.featured_rank,
   categorySlug: row.categories?.slug ?? "",
   tags: row.tags ?? [],
-  gallery: [],
+  gallery: mapGallery(row.gallery, row.title),
   metaTitle: row.meta_title ?? undefined,
   metaDescription: row.meta_description ?? undefined
 });
@@ -177,7 +197,7 @@ export async function listPublishedArticles(): Promise<Article[]> {
   const { data, error } = await serviceClient
     .from("posts")
     .select(
-      "id, slug, title, excerpt, body, author_name, published_at, read_time_label, cover_image_path, status, featured, featured_rank, tags, meta_title, meta_description, categories:category_id(slug)"
+      "id, slug, title, excerpt, body, author_name, published_at, read_time_label, cover_image_path, gallery, status, featured, featured_rank, tags, meta_title, meta_description, categories:category_id(slug)"
     )
     .eq("status", "published")
     .order("published_at", { ascending: false });
@@ -194,7 +214,7 @@ export async function listAllArticles(): Promise<Article[]> {
   const { data, error } = await serviceClient
     .from("posts")
     .select(
-      "id, slug, title, excerpt, body, author_name, published_at, read_time_label, cover_image_path, status, featured, featured_rank, tags, meta_title, meta_description, categories:category_id(slug)"
+      "id, slug, title, excerpt, body, author_name, published_at, read_time_label, cover_image_path, gallery, status, featured, featured_rank, tags, meta_title, meta_description, categories:category_id(slug)"
     )
     .order("published_at", { ascending: false });
 
@@ -424,6 +444,7 @@ export async function saveAdminContent(input: AdminContentInput) {
         category_id: category.id,
         author_name: input.author,
         cover_image_path: input.coverImage,
+        gallery: input.gallery,
         read_time_label: input.readTime,
         status: input.status,
         featured: input.featured,

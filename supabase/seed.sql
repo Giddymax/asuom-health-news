@@ -12,7 +12,7 @@ values
 on conflict (slug) do nothing;
 
 -- Posts
-insert into posts (slug, title, excerpt, body, category_id, author_name, published_at, read_time_label, cover_image_path, status, featured, featured_rank, tags, meta_title, meta_description)
+insert into posts (slug, title, excerpt, body, category_id, author_name, published_at, read_time_label, cover_image_path, status, featured, featured_rank, tags, gallery, meta_title, meta_description)
 values
   (
     'new-community-clinic-improves-preventive-care',
@@ -25,6 +25,7 @@ values
     (select id from categories where slug = 'community-health'),
     'Ama Boateng', '2026-04-15T09:00:00.000Z', '5 min read', '/images/placeholders/clinic.svg',
     'published', true, 1, array['Clinics','Primary Care','Eastern Region'],
+    '[{"id":"gallery-1","image":"/images/placeholders/gallery-1.svg","alt":"Clinic waiting area"},{"id":"gallery-2","image":"/images/placeholders/gallery-2.svg","alt":"Community outreach team"}]'::jsonb,
     'New community clinic improves preventive care access | Asuom Health News',
     'A new Asuom district clinic is making screenings, maternal care, and chronic care follow-ups easier to access.'
   ),
@@ -39,6 +40,7 @@ values
     (select id from categories where slug = 'maternal-care'),
     'Mabel Owusu', '2026-04-10T10:15:00.000Z', '4 min read', '/images/placeholders/midwife.svg',
     'published', true, 2, array['Maternal Care','Midwives','Outreach'],
+    '[]'::jsonb,
     'Maternal outreach programme expands home visits | Asuom Health News',
     'Midwives are extending home-based support to improve pregnancy follow-up and early warning sign detection.'
   ),
@@ -53,6 +55,7 @@ values
     (select id from categories where slug = 'mental-health'),
     'Kwesi Larbi', '2026-04-05T13:30:00.000Z', '6 min read', '/images/placeholders/mental-campaign.svg',
     'published', false, 0, array['Mental Health','Education','Community'],
+    '[]'::jsonb,
     'Mental health campaign reaches schools and market women',
     'Schools and market spaces are becoming entry points for accessible mental health education in the district.'
   ),
@@ -67,6 +70,7 @@ values
     (select id from categories where slug = 'international-news'),
     'Esi Appiah', '2026-03-28T08:20:00.000Z', '5 min read', '/images/placeholders/malaria.svg',
     'published', false, 0, array['Malaria','WHO','Prevention'],
+    '[]'::jsonb,
     'Global malaria update and local prevention meaning',
     'A clear breakdown of how international malaria guidance maps onto practical prevention at community level.'
   ),
@@ -81,6 +85,7 @@ values
     (select id from categories where slug = 'maternal-care'),
     'Joana Aidoo', '2026-03-22T14:00:00.000Z', '4 min read', '/images/placeholders/nutrition.svg',
     'published', false, 0, array['Nutrition','Breastfeeding','Community Education'],
+    '[]'::jsonb,
     'Nutrition education drive supports new mothers',
     'Local educators are sharing practical postpartum and infant feeding guidance with new mothers.'
   ),
@@ -95,6 +100,7 @@ values
     (select id from categories where slug = 'community-health'),
     'Samuel Tetteh', '2026-03-16T11:40:00.000Z', '5 min read', '/images/placeholders/water.svg',
     'published', false, 0, array['Water','Sanitation','Child Health'],
+    '[]'::jsonb,
     'Water and sanitation project lowers child illness risks',
     'Improved clean water access and hygiene education are helping reduce preventable child illness.'
   )

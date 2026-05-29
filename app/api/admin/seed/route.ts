@@ -64,6 +64,7 @@ export async function POST(request: Request) {
         published_at: post.publishedAt,
         read_time_label: post.readTime,
         cover_image_path: post.coverImage,
+        gallery: post.gallery,
         status: post.status,
         featured: post.featured,
         featured_rank: post.featuredRank,

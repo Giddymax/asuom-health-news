@@ -38,6 +38,15 @@ export const adminContentSchema = z.discriminatedUnion("entityType", [
     categorySlug: z.string().min(2),
     author: z.string().min(2),
     coverImage: z.string().min(2),
+    gallery: z
+      .array(
+        z.object({
+          id: z.string().min(1),
+          image: z.string().min(2),
+          alt: z.string()
+        })
+      )
+      .default([]),
     status: z.enum(["draft", "published"]),
     featured: z.coerce.boolean(),
     featuredRank: z.coerce.number().int().min(0),
