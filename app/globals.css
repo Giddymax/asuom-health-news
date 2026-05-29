@@ -1296,6 +1296,37 @@ label {
   gap: 10px;
 }
 
+.footer-settings-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.footer-settings-link:hover,
+.footer-settings-link:focus-visible {
+  color: white;
+  background: rgba(46, 204, 142, 0.16);
+  border-color: rgba(46, 204, 142, 0.34);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.footer-settings-link:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.footer-settings-link svg {
+  width: 15px;
+  height: 15px;
+}
+
 /* ── Tablet (≤1080px) ── */
 @media (max-width: 1080px) {
   .hero-grid,
