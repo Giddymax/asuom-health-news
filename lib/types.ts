@@ -48,6 +48,8 @@ export type Video = {
   videoUrl: string;
   categorySlug: string;
   publishedAt: string;
+  featured: boolean;
+  featuredRank: number;
 };
 
 export type InfoPage = {
@@ -263,6 +265,8 @@ export type AdminContentInput =
       videoUrl: string;
       categorySlug: string;
       publishedAt: string;
+      featured: boolean;
+      featuredRank: number;
     }
   | {
       entityType: "settings";

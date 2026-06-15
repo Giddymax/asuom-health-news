@@ -273,7 +273,9 @@ export const seedVideos: Video[] = [
     duration: "7:21",
     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     categorySlug: "maternal-care",
-    publishedAt: "2026-04-18T09:10:00.000Z"
+    publishedAt: "2026-04-18T09:10:00.000Z",
+    featured: true,
+    featuredRank: 1
   },
   {
     id: "video-2",
@@ -284,7 +286,9 @@ export const seedVideos: Video[] = [
     duration: "5:48",
     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     categorySlug: "international-news",
-    publishedAt: "2026-04-08T09:10:00.000Z"
+    publishedAt: "2026-04-08T09:10:00.000Z",
+    featured: false,
+    featuredRank: 0
   },
   {
     id: "video-3",
@@ -295,7 +299,9 @@ export const seedVideos: Video[] = [
     duration: "6:14",
     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     categorySlug: "mental-health",
-    publishedAt: "2026-03-30T09:10:00.000Z"
+    publishedAt: "2026-03-30T09:10:00.000Z",
+    featured: false,
+    featuredRank: 0
   }
 ];
 

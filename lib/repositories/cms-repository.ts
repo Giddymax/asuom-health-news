@@ -239,6 +239,22 @@ export async function listArticlesByCategory(slug: string): Promise<Article[]> {
   return articles.filter((article) => article.categorySlug === slug);
 }
 
+function mapVideo(row: Record<string, unknown>): Video {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    excerpt: String(row.excerpt),
+    thumbnail: String(row.thumbnail_path),
+    duration: String(row.duration_label),
+    videoUrl: String(row.video_url),
+    categorySlug: String(row.category_slug),
+    publishedAt: String(row.published_at),
+    featured: Boolean(row.featured),
+    featuredRank: Number(row.featured_rank ?? 0)
+  };
+}
+
 export async function listVideos(): Promise<Video[]> {
   if (!serviceClient) return seedVideos;
 
@@ -248,18 +264,24 @@ export async function listVideos(): Promise<Video[]> {
     .order("published_at", { ascending: false });
 
   if (error) return [];
+  return (data ?? []).map((row) => mapVideo(row as Record<string, unknown>));
+}
 
-  return (data ?? []).map((row) => ({
-    id: row.id,
-    slug: row.slug,
-    title: row.title,
-    excerpt: row.excerpt,
-    thumbnail: row.thumbnail_path,
-    duration: row.duration_label,
-    videoUrl: row.video_url,
-    categorySlug: row.category_slug,
-    publishedAt: row.published_at
-  }));
+export async function getFeaturedVideo(): Promise<Video | null> {
+  if (!serviceClient) {
+    return seedVideos.find((v) => v.featured && v.featuredRank === 1) ?? null;
+  }
+
+  const { data, error } = await serviceClient
+    .from("videos")
+    .select("*")
+    .eq("featured", true)
+    .order("featured_rank", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return mapVideo(data as Record<string, unknown>);
 }
 
 export async function getAdminSiteSnapshot() {
@@ -486,7 +508,9 @@ export async function saveAdminContent(input: AdminContentInput) {
         duration_label: input.duration,
         video_url: input.videoUrl,
         category_slug: input.categorySlug,
-        published_at: input.publishedAt
+        published_at: input.publishedAt,
+        featured: input.featured,
+        featured_rank: input.featuredRank
       },
       { onConflict: "slug" }
     );

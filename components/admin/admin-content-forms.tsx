@@ -214,7 +214,9 @@ export function AdminContentForms({
                 duration: String(raw.duration ?? ""),
                 videoUrl: String(raw.videoUrl ?? ""),
                 categorySlug: String(raw.categorySlug ?? ""),
-                publishedAt: String(raw.publishedAt ?? "")
+                publishedAt: String(raw.publishedAt ?? ""),
+                featured: raw.featured === "on",
+                featuredRank: Number(raw.featuredRank ?? 0)
               }
             : mode === "post"
               ? {
@@ -480,6 +482,14 @@ function VideoFields({ categories, video, supabaseEnabled }: { categories: Categ
           defaultValue={video?.publishedAt ? video.publishedAt.slice(0, 16) : ""}
           required
         />
+      </label>
+      <label>
+        Featured in Hero
+        <input type="checkbox" name="featured" defaultChecked={video?.featured ?? false} />
+      </label>
+      <label>
+        Featured Rank
+        <input type="number" name="featuredRank" min="0" defaultValue={video?.featuredRank ?? 0} />
       </label>
       <ImageUploadField
         name="thumbnail"

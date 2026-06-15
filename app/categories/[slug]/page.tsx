@@ -69,7 +69,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             title={`${category.name} reporting`}
             description={category.description}
           />
-          <div className="article-grid">
+          <div className="article-grid category-article-grid">
             {articles.map((article) => (
               <ArticleCard
                 key={article.id}

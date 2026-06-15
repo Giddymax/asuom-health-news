@@ -11,6 +11,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import {
   getActiveDonationCampaign,
+  getFeaturedVideo,
   getSiteSettings,
   listCategories,
   listFeaturedArticles,
@@ -20,13 +21,14 @@ import {
 import { formatMoney } from "@/lib/utils";
 
 export default async function HomePage() {
-  const [settings, categories, featuredArticles, allArticles, videos, campaign] = await Promise.all([
+  const [settings, categories, featuredArticles, allArticles, videos, campaign, featuredVideo] = await Promise.all([
     getSiteSettings(),
     listCategories(),
     listFeaturedArticles(),
     listPublishedArticles(),
     listVideos(),
-    getActiveDonationCampaign()
+    getActiveDonationCampaign(),
+    getFeaturedVideo()
   ]);
 
   const lead = featuredArticles[0] ?? allArticles[0];
@@ -63,7 +65,43 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="hero-panel surface-elevated">
-            {lead ? <ArticleCard article={lead} category={categories.find((item) => item.slug === lead.categorySlug)} featured /> : null}
+            {featuredVideo ? (
+              <div className="hero-video-panel">
+                <div className="hero-video-thumb">
+                  {/\.(mp4|webm|ogg|mov)(\?|$)/i.test(featuredVideo.videoUrl) ? (
+                    <video
+                      src={featuredVideo.videoUrl}
+                      controls
+                      playsInline
+                      poster={featuredVideo.thumbnail}
+                      className="hero-video-player"
+                    />
+                  ) : (
+                    <iframe
+                      src={
+                        featuredVideo.videoUrl.match(/(?:youtube\.com\/watch[?&]v=|youtu\.be\/)([A-Za-z0-9_-]{11})/)
+                          ? `https://www.youtube.com/embed/${featuredVideo.videoUrl.match(/(?:youtube\.com\/watch[?&]v=|youtu\.be\/)([A-Za-z0-9_-]{11})/)![1]}?rel=0&playsinline=1`
+                          : featuredVideo.videoUrl.match(/vimeo\.com\/(\d+)/)
+                            ? `https://player.vimeo.com/video/${featuredVideo.videoUrl.match(/vimeo\.com\/(\d+)/)![1]}?playsinline=1`
+                            : featuredVideo.videoUrl
+                      }
+                      loading="lazy"
+                      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      className="hero-video-player"
+                      title={featuredVideo.title}
+                    />
+                  )}
+                </div>
+                <div className="hero-video-copy">
+                  <span className="eyebrow">{featuredVideo.duration}</span>
+                  <h3>{featuredVideo.title}</h3>
+                  <p>{featuredVideo.excerpt}</p>
+                </div>
+              </div>
+            ) : lead ? (
+              <ArticleCard article={lead} category={categories.find((item) => item.slug === lead.categorySlug)} featured />
+            ) : null}
           </div>
         </Container>
       </section>
