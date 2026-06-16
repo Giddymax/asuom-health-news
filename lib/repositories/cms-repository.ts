@@ -267,6 +267,16 @@ export async function listVideos(): Promise<Video[]> {
   return (data ?? []).map((row) => mapVideo(row as Record<string, unknown>));
 }
 
+export async function getVideoBySlug(slug: string): Promise<Video | null> {
+  const videos = await listVideos();
+  return videos.find((v) => v.slug === slug) ?? null;
+}
+
+export async function listVideosByCategory(categorySlug: string): Promise<Video[]> {
+  const videos = await listVideos();
+  return videos.filter((v) => v.categorySlug === categorySlug);
+}
+
 export async function getFeaturedVideo(): Promise<Video | null> {
   if (!serviceClient) {
     return seedVideos.find((v) => v.featured && v.featuredRank === 1) ?? null;

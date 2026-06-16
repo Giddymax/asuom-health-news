@@ -692,6 +692,91 @@ main {
   background: #000;
 }
 
+.video-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.video-title-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Video detail page ───────────────────────────────── */
+.video-detail-hero {
+  padding-top: 40px;
+  padding-bottom: 32px;
+}
+
+.video-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.video-detail-duration {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.video-detail-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin: 0 0 12px;
+}
+
+.video-detail-excerpt {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin: 0;
+  max-width: 64ch;
+}
+
+.video-detail-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 24px;
+  align-items: start;
+  padding-block: 0 72px;
+}
+
+.video-detail-player {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  padding: 18px;
+}
+
+.video-detail-embed {
+  position: relative;
+  padding-top: 56.25%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+}
+
+.video-embed-el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.video-detail-sidebar {
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.video-detail-sidebar h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
 /* ── Video share button ──────────────────────────────── */
 .video-meta-row {
   display: flex;
@@ -1418,6 +1503,7 @@ label {
   .two-column-highlight,
   .article-hero-grid,
   .article-layout,
+  .video-detail-layout,
   .category-hero-grid,
   .info-layout,
   .donation-layout,

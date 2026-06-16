@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { Video } from "@/lib/types";
 import { VideoShareButton } from "@/components/site/video-share-button";
 
@@ -47,7 +49,11 @@ export function VideoCard({ video }: VideoCardProps) {
         )}
       </div>
       <div className="video-copy">
-        <h3>{video.title}</h3>
+        <h3>
+          <Link href={`/videos/${video.slug}`} className="video-title-link">
+            {video.title}
+          </Link>
+        </h3>
         <p>{video.excerpt}</p>
         <div className="video-meta-row">
           <strong>{video.duration}</strong>
