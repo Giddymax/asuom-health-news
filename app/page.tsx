@@ -95,7 +95,11 @@ export default async function HomePage() {
                 </div>
                 <div className="hero-video-copy">
                   <span className="eyebrow">{featuredVideo.duration}</span>
-                  <h3>{featuredVideo.title}</h3>
+                  <h3>
+                    <Link href={`/videos/${featuredVideo.slug}`} className="video-title-link">
+                      {featuredVideo.title}
+                    </Link>
+                  </h3>
                   <p>{featuredVideo.excerpt}</p>
                 </div>
               </div>
