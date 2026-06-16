@@ -187,7 +187,8 @@ export function AdminContentForms({
             heroImageOpacity: Number(raw.heroImageOpacity ?? 0.28),
             imageContrast: Number(raw.imageContrast ?? 1.16),
             imageSaturation: Number(raw.imageSaturation ?? 1.2),
-            imageBrightness: Number(raw.imageBrightness ?? 1.03)
+            imageBrightness: Number(raw.imageBrightness ?? 1.03),
+            heroPanelMode: raw.heroPanelMode === "video" ? "video" : "article"
           }
         : mode === "donation"
           ? {
@@ -652,6 +653,13 @@ function SettingsFields({ settings, supabaseEnabled }: { settings: SiteSettings;
 
       {/* ── Homepage Section Text ── */}
       <p className="field-full admin-section-label">Homepage — Hero Section</p>
+      <label className="field-full">
+        Hero Panel — What to feature
+        <select name="heroPanelMode" defaultValue={settings.heroPanelMode ?? "article"}>
+          <option value="article">Rank 1 Article</option>
+          <option value="video">Rank 1 Video</option>
+        </select>
+      </label>
       <label>
         Eyebrow Text
         <input name="hpc_heroEyebrow" defaultValue={hpc.heroEyebrow} />

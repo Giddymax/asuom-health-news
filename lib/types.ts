@@ -189,6 +189,8 @@ export const defaultHomepageContent: HomepageContent = {
   contactDescription: "This form stores submissions in Supabase once your project variables are connected."
 };
 
+export type HeroPanelMode = "article" | "video";
+
 export type SiteSettings = {
   siteName: string;
   tagline: string;
@@ -212,6 +214,7 @@ export type SiteSettings = {
   imageContrast: number;
   imageSaturation: number;
   imageBrightness: number;
+  heroPanelMode: HeroPanelMode;
 };
 
 export type DashboardStats = {
@@ -292,6 +295,7 @@ export type AdminContentInput =
       imageContrast: number;
       imageSaturation: number;
       imageBrightness: number;
+      heroPanelMode: HeroPanelMode;
     }
   | {
       entityType: "donation";

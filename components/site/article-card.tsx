@@ -14,15 +14,17 @@ type ArticleCardProps = {
 export function ArticleCard({ article, category, featured = false }: ArticleCardProps) {
   return (
     <article className={featured ? "article-card article-card-featured" : "article-card"}>
-      <Link href={`/articles/${article.slug}`} className="article-media">
+      <div className="article-media">
         <Image src={article.coverImage} alt={article.title} width={900} height={580} />
-      </Link>
+      </div>
       <div className="article-copy">
         <span className="pill" style={{ "--pill-color": category?.color ?? "#2ECC8E" } as CSSProperties}>
           {category?.name ?? "Health"}
         </span>
         <h3>
-          <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+          <Link href={`/articles/${article.slug}`} className="article-card-link">
+            {article.title}
+          </Link>
         </h3>
         <p>{article.excerpt}</p>
         <div className="article-meta">

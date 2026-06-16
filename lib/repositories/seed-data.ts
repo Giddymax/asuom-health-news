@@ -47,7 +47,8 @@ export const seedSettings: SiteSettings = {
   heroImageOpacity: 0.28,
   imageContrast: 1,
   imageSaturation: 1,
-  imageBrightness: 1
+  imageBrightness: 1,
+  heroPanelMode: "article" as const
 };
 
 export const seedCategories: Category[] = [

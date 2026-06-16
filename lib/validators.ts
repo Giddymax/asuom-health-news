@@ -141,7 +141,8 @@ export const adminContentSchema = z.discriminatedUnion("entityType", [
     heroImageOpacity: z.coerce.number().min(0).max(1),
     imageContrast: z.coerce.number().min(1).max(2),
     imageSaturation: z.coerce.number().min(1).max(2),
-    imageBrightness: z.coerce.number().min(0.8).max(1.5)
+    imageBrightness: z.coerce.number().min(0.8).max(1.5),
+    heroPanelMode: z.enum(["article", "video"])
   }),
   z.object({
     entityType: z.literal("donation"),

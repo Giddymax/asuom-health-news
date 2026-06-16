@@ -65,7 +65,7 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="hero-panel surface-elevated">
-            {featuredVideo ? (
+            {settings.heroPanelMode === "video" && featuredVideo ? (
               <div className="hero-video-panel">
                 <div className="hero-video-thumb">
                   {/\.(mp4|webm|ogg|mov)(\?|$)/i.test(featuredVideo.videoUrl) ? (

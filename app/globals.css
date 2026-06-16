@@ -502,6 +502,20 @@ main {
 .article-card {
   display: grid;
   gap: 14px;
+  position: relative;
+}
+
+.article-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.article-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
 }
 
 .article-card-featured h3 {

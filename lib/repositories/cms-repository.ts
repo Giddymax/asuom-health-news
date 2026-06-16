@@ -166,7 +166,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     heroImageOpacity: typeof data.hero_image_opacity === "number" ? data.hero_image_opacity : seedSettings.heroImageOpacity,
     imageContrast: typeof data.image_contrast === "number" ? data.image_contrast : seedSettings.imageContrast,
     imageSaturation: typeof data.image_saturation === "number" ? data.image_saturation : seedSettings.imageSaturation,
-    imageBrightness: typeof data.image_brightness === "number" ? data.image_brightness : seedSettings.imageBrightness
+    imageBrightness: typeof data.image_brightness === "number" ? data.image_brightness : seedSettings.imageBrightness,
+    heroPanelMode: data.hero_panel_mode === "video" ? "video" : "article"
   };
 }
 
@@ -555,7 +556,8 @@ export async function saveAdminContent(input: AdminContentInput) {
         hero_image_opacity: input.heroImageOpacity,
         image_contrast: input.imageContrast,
         image_saturation: input.imageSaturation,
-        image_brightness: input.imageBrightness
+        image_brightness: input.imageBrightness,
+        hero_panel_mode: input.heroPanelMode
       },
       existing?.id ? { onConflict: "id" } : undefined
     );
