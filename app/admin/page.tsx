@@ -54,18 +54,22 @@ export default async function AdminDashboardPage({
           <div className="surface-elevated stat-card">
             <strong>{stats.articleCount}</strong>
             <span>Articles</span>
+            <p>Total articles published across all categories.</p>
           </div>
           <div className="surface-elevated stat-card">
             <strong>{stats.categoryCount}</strong>
             <span>Categories</span>
+            <p>Coverage areas currently live on the site.</p>
           </div>
           <div className="surface-elevated stat-card">
             <strong>{stats.donationCount}</strong>
             <span>Donations</span>
+            <p>Donation submissions received through the site.</p>
           </div>
           <div className="surface-elevated stat-card">
             <strong>{stats.visitorCount}</strong>
             <span>Visitors</span>
+            <p>Unique visitors recorded, once per browser per day.</p>
           </div>
         </section>
 
