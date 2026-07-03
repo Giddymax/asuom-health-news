@@ -927,7 +927,9 @@ main {
 }
 
 .bottom-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 640px;
+  margin-inline: auto;
 }
 
 .bottom-grid > *,
@@ -948,7 +950,6 @@ main {
   margin-bottom: 1.5rem;
 }
 
-.newsletter-form,
 .contact-form,
 .donation-form,
 .admin-login-form,
@@ -957,8 +958,6 @@ main {
   gap: 16px;
 }
 
-.newsletter-form input,
-.newsletter-form button,
 .contact-form input,
 .contact-form textarea,
 .donation-form input,
@@ -984,17 +983,6 @@ main {
   width: auto;
   padding: 0;
   min-height: unset;
-}
-
-.newsletter-form {
-  align-items: start;
-}
-
-.newsletter-form button {
-  max-width: 180px;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white;
-  font-weight: 700;
 }
 
 .field-grid,
@@ -1837,5 +1825,67 @@ label {
     width: 100%;
     text-align: center;
     justify-content: center;
+  }
+}
+
+.pwa-install-banner {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-inline: auto;
+  max-width: 520px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--secondary);
+  color: #ffffff;
+  box-shadow: var(--shadow-float);
+}
+
+.pwa-install-banner span {
+  flex: 1;
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.pwa-install-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pwa-install-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pwa-install-dismiss:hover,
+.pwa-install-dismiss:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 560px) {
+  .pwa-install-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pwa-install-actions {
+    justify-content: space-between;
   }
 }

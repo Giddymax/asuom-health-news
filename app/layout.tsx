@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
+import { PwaInstall } from "@/components/site/pwa-install";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 import { getSiteSettings } from "@/lib/repositories/cms-repository";
@@ -19,10 +20,16 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${settings.siteName}`
     },
     description,
+    manifest: "/manifest.webmanifest",
     icons: {
       icon: logoUrl,
       shortcut: logoUrl,
-      apple: logoUrl
+      apple: "/icons/apple-touch-icon.png"
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: settings.siteName
     },
     openGraph: {
       title: settings.siteName,
@@ -30,6 +37,15 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       ...(settings.ogImage ? { images: [{ url: settings.ogImage }] } : {})
     }
+  };
+}
+
+export async function generateViewport(): Promise<Viewport> {
+  const settings = await getSiteSettings();
+  return {
+    themeColor: settings.theme.secondary,
+    width: "device-width",
+    initialScale: 1
   };
 }
 
@@ -69,6 +85,7 @@ export default async function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
       </head>
       <body suppressHydrationWarning>
+        <PwaInstall />
         <SiteHeader />
         {children}
         <SiteFooter />

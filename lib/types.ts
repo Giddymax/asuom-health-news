@@ -76,11 +76,6 @@ export type DonationCampaign = {
   image: string;
 };
 
-export type NewsletterSignup = {
-  email: string;
-  source: string;
-};
-
 export type DonationSubmission = {
   fullName: string;
   location: string;
@@ -156,9 +151,6 @@ export type HomepageContent = {
   videoTitle: string;
   videoDescription: string;
   donateBtn: string;
-  newsletterEyebrow: string;
-  newsletterTitle: string;
-  newsletterDescription: string;
   contactEyebrow: string;
   contactTitle: string;
   contactDescription: string;
@@ -181,9 +173,6 @@ export const defaultHomepageContent: HomepageContent = {
   videoTitle: "Short explainers for readers on the move",
   videoDescription: "Use these modules for embedded journalism, sponsored health explainers, or outreach campaigns.",
   donateBtn: "Donate Now",
-  newsletterEyebrow: "Newsletter",
-  newsletterTitle: "Receive the week's most useful health reporting",
-  newsletterDescription: "Newsletter signups are wired to Supabase when configured, with a zero-friction demo fallback during setup.",
   contactEyebrow: "Contact",
   contactTitle: "Share a story tip, question, or correction",
   contactDescription: "This form stores submissions in Supabase once your project variables are connected."
@@ -220,7 +209,6 @@ export type SiteSettings = {
 export type DashboardStats = {
   articleCount: number;
   categoryCount: number;
-  newsletterCount: number;
   donationCount: number;
 };
 

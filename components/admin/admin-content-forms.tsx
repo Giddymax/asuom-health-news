@@ -175,9 +175,6 @@ export function AdminContentForms({
               videoTitle: hpc("videoTitle"),
               videoDescription: hpc("videoDescription"),
               donateBtn: hpc("donateBtn"),
-              newsletterEyebrow: hpc("newsletterEyebrow"),
-              newsletterTitle: hpc("newsletterTitle"),
-              newsletterDescription: hpc("newsletterDescription"),
               contactEyebrow: hpc("contactEyebrow"),
               contactTitle: hpc("contactTitle"),
               contactDescription: hpc("contactDescription")
@@ -733,18 +730,6 @@ function SettingsFields({ settings, supabaseEnabled }: { settings: SiteSettings;
       <label>
         Donate Button Text
         <input name="hpc_donateBtn" defaultValue={hpc.donateBtn} />
-      </label>
-      <label>
-        Newsletter Eyebrow
-        <input name="hpc_newsletterEyebrow" defaultValue={hpc.newsletterEyebrow} />
-      </label>
-      <label className="field-full">
-        Newsletter Title
-        <input name="hpc_newsletterTitle" defaultValue={hpc.newsletterTitle} />
-      </label>
-      <label className="field-full">
-        Newsletter Description
-        <input name="hpc_newsletterDescription" defaultValue={hpc.newsletterDescription} />
       </label>
       <label>
         Contact Eyebrow

@@ -1,10 +1,5 @@
 import { z } from "zod";
 
-export const newsletterSchema = z.object({
-  email: z.string().email(),
-  source: z.string().min(2).max(100)
-});
-
 export const donationSchema = z.object({
   fullName: z.string().min(2).max(120),
   location: z.string().min(2).max(120),
@@ -129,9 +124,6 @@ export const adminContentSchema = z.discriminatedUnion("entityType", [
       videoTitle: z.string(),
       videoDescription: z.string(),
       donateBtn: z.string(),
-      newsletterEyebrow: z.string(),
-      newsletterTitle: z.string(),
-      newsletterDescription: z.string(),
       contactEyebrow: z.string(),
       contactTitle: z.string(),
       contactDescription: z.string()

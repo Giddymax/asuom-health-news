@@ -12,7 +12,6 @@ import type {
   DonationCampaign,
   DonationSubmission,
   InfoPage,
-  NewsletterSignup,
   SiteSettings,
   Video
 } from "@/lib/types";
@@ -360,23 +359,6 @@ export async function getActiveDonationCampaign(): Promise<DonationCampaign> {
   };
 }
 
-export async function createNewsletterSignup(input: NewsletterSignup) {
-  if (!serviceClient) {
-    return { ok: true, mode: "demo" as const };
-  }
-
-  const { error } = await serviceClient.from("newsletter_signups").upsert(
-    {
-      email: input.email,
-      source: input.source
-    },
-    { onConflict: "email" }
-  );
-
-  if (error) throw new Error(error.message);
-  return { ok: true, mode: "database" as const };
-}
-
 export async function createDonation(input: DonationSubmission) {
   if (!serviceClient) {
     return { ok: true, mode: "demo" as const };
@@ -418,22 +400,19 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     return {
       articleCount: seedArticles.length,
       categoryCount: seedCategories.length,
-      newsletterCount: 0,
       donationCount: 0
     };
   }
 
-  const [posts, categories, newsletter, donations] = await Promise.all([
+  const [posts, categories, donations] = await Promise.all([
     serviceClient.from("posts").select("id", { count: "exact", head: true }),
     serviceClient.from("categories").select("id", { count: "exact", head: true }),
-    serviceClient.from("newsletter_signups").select("id", { count: "exact", head: true }),
     serviceClient.from("donations").select("id", { count: "exact", head: true })
   ]);
 
   return {
     articleCount: posts.count ?? seedArticles.length,
     categoryCount: categories.count ?? seedCategories.length,
-    newsletterCount: newsletter.count ?? 0,
     donationCount: donations.count ?? 0
   };
 }

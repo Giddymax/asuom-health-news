@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ArticleCard } from "@/components/site/article-card";
 import { ContactForm } from "@/components/site/contact-form";
 import { NewsTicker } from "@/components/site/news-ticker";
-import { NewsletterForm } from "@/components/site/newsletter-form";
 import { VideoCard } from "@/components/site/video-card";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -212,14 +211,6 @@ export default async function HomePage() {
         </section>
 
         <section className="bottom-grid">
-          <div className="surface-elevated">
-            <SectionHeading
-              eyebrow={hpc.newsletterEyebrow}
-              title={hpc.newsletterTitle}
-              description={hpc.newsletterDescription}
-            />
-            <NewsletterForm />
-          </div>
           <div className="surface-elevated">
             <SectionHeading
               eyebrow={hpc.contactEyebrow}

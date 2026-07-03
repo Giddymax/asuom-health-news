@@ -60,10 +60,6 @@ export default async function AdminDashboardPage({
             <span>Categories</span>
           </div>
           <div className="surface-elevated stat-card">
-            <strong>{stats.newsletterCount}</strong>
-            <span>Subscribers</span>
-          </div>
-          <div className="surface-elevated stat-card">
             <strong>{stats.donationCount}</strong>
             <span>Donations</span>
           </div>
