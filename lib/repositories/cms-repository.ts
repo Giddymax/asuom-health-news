@@ -13,7 +13,8 @@ import type {
   DonationSubmission,
   InfoPage,
   SiteSettings,
-  Video
+  Video,
+  VisitRecord
 } from "@/lib/types";
 import {
   defaultFooterExploreLinks,
@@ -395,25 +396,42 @@ export async function createContactSubmission(input: ContactSubmission) {
   return { ok: true, mode: "database" as const };
 }
 
+export async function recordVisit(input: VisitRecord) {
+  if (!serviceClient) {
+    return { ok: true, mode: "demo" as const };
+  }
+
+  const { error } = await serviceClient.from("site_visits").insert({
+    visitor_id: input.visitorId,
+    path: input.path
+  });
+
+  if (error) throw new Error(error.message);
+  return { ok: true, mode: "database" as const };
+}
+
 export async function getDashboardStats(): Promise<DashboardStats> {
   if (!serviceClient) {
     return {
       articleCount: seedArticles.length,
       categoryCount: seedCategories.length,
-      donationCount: 0
+      donationCount: 0,
+      visitorCount: 0
     };
   }
 
-  const [posts, categories, donations] = await Promise.all([
+  const [posts, categories, donations, visits] = await Promise.all([
     serviceClient.from("posts").select("id", { count: "exact", head: true }),
     serviceClient.from("categories").select("id", { count: "exact", head: true }),
-    serviceClient.from("donations").select("id", { count: "exact", head: true })
+    serviceClient.from("donations").select("id", { count: "exact", head: true }),
+    serviceClient.from("site_visits").select("id", { count: "exact", head: true })
   ]);
 
   return {
     articleCount: posts.count ?? seedArticles.length,
     categoryCount: categories.count ?? seedCategories.length,
-    donationCount: donations.count ?? 0
+    donationCount: donations.count ?? 0,
+    visitorCount: visits.count ?? 0
   };
 }
 

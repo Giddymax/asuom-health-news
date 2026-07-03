@@ -28,6 +28,7 @@ A Next.js 16 health news site backed by Supabase (Postgres + file storage). This
    - `supabase/migrations/0008_post_gallery_images.sql`
    - `supabase/migrations/0009_video_featured_rank.sql`
    - `supabase/migrations/0010_settings_hero_panel_mode.sql`
+   - `supabase/migrations/0011_site_visits.sql`
 4. **(Optional)** To load demo content, paste the contents of `supabase/seed.sql` into the SQL Editor and run it.
 
 ---

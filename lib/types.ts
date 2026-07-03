@@ -94,6 +94,11 @@ export type ContactSubmission = {
   message: string;
 };
 
+export type VisitRecord = {
+  visitorId: string;
+  path: string;
+};
+
 export type SiteTheme = {
   primary: string;
   primaryDark: string;
@@ -210,6 +215,7 @@ export type DashboardStats = {
   articleCount: number;
   categoryCount: number;
   donationCount: number;
+  visitorCount: number;
 };
 
 export type AdminContentInput =

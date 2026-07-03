@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { PwaInstall } from "@/components/site/pwa-install";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { VisitTracker } from "@/components/site/visit-tracker";
 import { getSiteSettings } from "@/lib/repositories/cms-repository";
 import "@/app/globals.css";
 
@@ -85,6 +86,7 @@ export default async function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: themeCSS }} />
       </head>
       <body suppressHydrationWarning>
+        <VisitTracker />
         <PwaInstall />
         <SiteHeader />
         {children}
