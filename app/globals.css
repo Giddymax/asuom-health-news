@@ -1134,8 +1134,26 @@ label {
 }
 
 .gallery-item {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border-radius: 18px;
+  margin: 0;
+  background: var(--surface-strong);
+}
+
+.gallery-caption {
+  padding: 10px 14px;
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-strong);
+  border-bottom: 1px solid var(--line);
+}
+
+.gallery-item img {
+  flex: 1 1 auto;
 }
 
 .category-hero {

@@ -89,9 +89,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {article.gallery.length ? (
             <div className="gallery-grid">
               {article.gallery.map((item) => (
-                <div key={item.id} className="gallery-item">
+                <figure key={item.id} className="gallery-item">
+                  <figcaption className="gallery-caption">{item.alt}</figcaption>
                   <Image src={item.image} alt={item.alt} width={720} height={520} />
-                </div>
+                </figure>
               ))}
             </div>
           ) : null}
