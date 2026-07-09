@@ -780,6 +780,25 @@ main {
   display: block;
 }
 
+.video-detail-extra-clips {
+  margin-top: 24px;
+}
+
+.video-detail-extra-clips h2 {
+  font-size: 1.05rem;
+  margin: 0 0 14px;
+}
+
+.video-detail-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.video-detail-extra-embed {
+  border-radius: var(--radius-sm);
+}
+
 .video-detail-sidebar {
   border-radius: var(--radius-lg);
   padding: 24px;
@@ -1617,7 +1636,8 @@ label {
   .footer-grid,
   .gallery-grid,
   .field-grid,
-  .admin-form {
+  .admin-form,
+  .video-detail-extra-grid {
     grid-template-columns: 1fr;
   }
 

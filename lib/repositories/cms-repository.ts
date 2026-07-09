@@ -240,6 +240,11 @@ export async function listArticlesByCategory(slug: string): Promise<Article[]> {
   return articles.filter((article) => article.categorySlug === slug);
 }
 
+function mapExtraVideoUrls(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((item): item is string => typeof item === "string" && item.trim().length > 0).slice(0, 2);
+}
+
 function mapVideo(row: Record<string, unknown>): Video {
   return {
     id: String(row.id),
@@ -249,6 +254,7 @@ function mapVideo(row: Record<string, unknown>): Video {
     thumbnail: String(row.thumbnail_path),
     duration: String(row.duration_label),
     videoUrl: String(row.video_url),
+    extraVideoUrls: mapExtraVideoUrls(row.extra_video_urls),
     categorySlug: String(row.category_slug),
     publishedAt: String(row.published_at),
     featured: Boolean(row.featured),
@@ -515,6 +521,7 @@ export async function saveAdminContent(input: AdminContentInput) {
         thumbnail_path: input.thumbnail,
         duration_label: input.duration,
         video_url: input.videoUrl,
+        extra_video_urls: input.extraVideoUrls.slice(0, 2),
         category_slug: input.categorySlug,
         published_at: input.publishedAt,
         featured: input.featured,

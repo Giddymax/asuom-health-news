@@ -78,6 +78,7 @@ export const adminContentSchema = z.discriminatedUnion("entityType", [
     thumbnail: z.string().min(2),
     duration: z.string().min(2),
     videoUrl: z.string().url(),
+    extraVideoUrls: z.array(z.string().url()).max(2),
     categorySlug: z.string().min(2),
     publishedAt: z.string().min(4),
     featured: z.coerce.boolean(),

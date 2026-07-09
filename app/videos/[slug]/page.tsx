@@ -109,6 +109,33 @@ export default async function VideoPage({ params }: VideoPageProps) {
               />
             )}
           </div>
+
+          {video.extraVideoUrls.length ? (
+            <div className="video-detail-extra-clips">
+              <h2>More Clips</h2>
+              <div className="video-detail-extra-grid">
+                {video.extraVideoUrls.map((url, index) => {
+                  const clipEmbed = toEmbedSrc(url);
+                  return (
+                    <div key={url} className="video-detail-embed video-detail-extra-embed">
+                      {clipEmbed.kind === "video" ? (
+                        <video src={clipEmbed.src} controls playsInline className="video-embed-el" />
+                      ) : (
+                        <iframe
+                          src={clipEmbed.src}
+                          loading="lazy"
+                          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                          allowFullScreen
+                          className="video-embed-el"
+                          title={`${video.title} — clip ${index + 2}`}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <aside className="video-detail-sidebar surface-elevated">

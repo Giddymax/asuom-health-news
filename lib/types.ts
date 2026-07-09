@@ -46,6 +46,7 @@ export type Video = {
   thumbnail: string;
   duration: string;
   videoUrl: string;
+  extraVideoUrls: string[];
   categorySlug: string;
   publishedAt: string;
   featured: boolean;
@@ -260,6 +261,7 @@ export type AdminContentInput =
       thumbnail: string;
       duration: string;
       videoUrl: string;
+      extraVideoUrls: string[];
       categorySlug: string;
       publishedAt: string;
       featured: boolean;

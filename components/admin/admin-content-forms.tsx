@@ -9,6 +9,7 @@ import { saveContentAction, deleteContentAction } from "@/app/admin/actions";
 import { ArticleGalleryField } from "@/components/admin/article-gallery-field";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { LinksEditor } from "@/components/admin/links-editor";
+import { VideoClipsField } from "@/components/admin/video-clips-field";
 import { VideoUploadField } from "@/components/admin/video-upload-field";
 
 type AdminContentFormsProps = {
@@ -62,6 +63,20 @@ function parseGallery(raw: FormDataEntryValue | undefined) {
         alt: String(item?.alt ?? "").trim()
       }))
       .filter((item) => item.image);
+  } catch {
+    return [];
+  }
+}
+
+function parseVideoUrls(raw: FormDataEntryValue | undefined) {
+  try {
+    const parsed = JSON.parse(String(raw ?? "[]"));
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .map((item) => String(item ?? "").trim())
+      .filter((item) => item)
+      .slice(0, 2);
   } catch {
     return [];
   }
@@ -211,6 +226,7 @@ export function AdminContentForms({
                 thumbnail: String(raw.thumbnail ?? ""),
                 duration: String(raw.duration ?? ""),
                 videoUrl: String(raw.videoUrl ?? ""),
+                extraVideoUrls: parseVideoUrls(raw.extraVideoUrlsJson),
                 categorySlug: String(raw.categorySlug ?? ""),
                 publishedAt: String(raw.publishedAt ?? ""),
                 featured: raw.featured === "on",
@@ -499,6 +515,11 @@ function VideoFields({ categories, video, supabaseEnabled }: { categories: Categ
         name="videoUrl"
         label="Video File"
         defaultValue={video?.videoUrl ?? ""}
+      />
+      <VideoClipsField
+        name="extraVideoUrlsJson"
+        label="Additional Clips"
+        defaultValues={video?.extraVideoUrls ?? []}
       />
     </>
   );
