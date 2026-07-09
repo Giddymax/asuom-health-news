@@ -7,7 +7,7 @@ export default async function AdminLoginPage() {
       <Container className="admin-login-shell">
         <section className="surface-elevated admin-intro">
           <span className="eyebrow">Control Centre</span>
-          <h1>Manage a full Supabase-backed health newsroom from one dashboard.</h1>
+          <h1>Manage your entire newsroom from one dashboard.</h1>
           <p>
             Create categories, publish posts, update information pages, review donations, and keep
             the public site in sync with one structured content model.
