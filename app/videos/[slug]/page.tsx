@@ -110,27 +110,30 @@ export default async function VideoPage({ params }: VideoPageProps) {
             )}
           </div>
 
-          {video.extraVideoUrls.length ? (
+          {video.extraClips.length ? (
             <div className="video-detail-extra-clips">
               <h2>More Clips</h2>
               <div className="video-detail-extra-grid">
-                {video.extraVideoUrls.map((url, index) => {
-                  const clipEmbed = toEmbedSrc(url);
+                {video.extraClips.map((clip, index) => {
+                  const clipEmbed = toEmbedSrc(clip.url);
                   return (
-                    <div key={url} className="video-detail-embed video-detail-extra-embed">
-                      {clipEmbed.kind === "video" ? (
-                        <video src={clipEmbed.src} controls playsInline className="video-embed-el" />
-                      ) : (
-                        <iframe
-                          src={clipEmbed.src}
-                          loading="lazy"
-                          allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                          allowFullScreen
-                          className="video-embed-el"
-                          title={`${video.title} — clip ${index + 2}`}
-                        />
-                      )}
-                    </div>
+                    <figure key={clip.id} className="video-detail-extra-item">
+                      {clip.caption ? <figcaption className="gallery-caption">{clip.caption}</figcaption> : null}
+                      <div className="video-detail-embed video-detail-extra-embed">
+                        {clipEmbed.kind === "video" ? (
+                          <video src={clipEmbed.src} controls playsInline className="video-embed-el" />
+                        ) : (
+                          <iframe
+                            src={clipEmbed.src}
+                            loading="lazy"
+                            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                            allowFullScreen
+                            className="video-embed-el"
+                            title={clip.caption || `${video.title} — clip ${index + 2}`}
+                          />
+                        )}
+                      </div>
+                    </figure>
                   );
                 })}
               </div>

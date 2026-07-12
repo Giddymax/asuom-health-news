@@ -795,8 +795,17 @@ main {
   gap: 16px;
 }
 
-.video-detail-extra-embed {
+.video-detail-extra-item {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border-radius: var(--radius-sm);
+  margin: 0;
+  background: var(--surface-strong);
+}
+
+.video-detail-extra-embed {
+  border-radius: 0;
 }
 
 .video-detail-sidebar {

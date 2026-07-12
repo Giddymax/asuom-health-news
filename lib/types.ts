@@ -18,6 +18,12 @@ export type GalleryItem = {
   alt: string;
 };
 
+export type VideoClip = {
+  id: string;
+  url: string;
+  caption: string;
+};
+
 export type Article = {
   id: string;
   slug: string;
@@ -46,7 +52,7 @@ export type Video = {
   thumbnail: string;
   duration: string;
   videoUrl: string;
-  extraVideoUrls: string[];
+  extraClips: VideoClip[];
   categorySlug: string;
   publishedAt: string;
   featured: boolean;
@@ -261,7 +267,7 @@ export type AdminContentInput =
       thumbnail: string;
       duration: string;
       videoUrl: string;
-      extraVideoUrls: string[];
+      extraClips: VideoClip[];
       categorySlug: string;
       publishedAt: string;
       featured: boolean;

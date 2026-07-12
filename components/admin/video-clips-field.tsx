@@ -2,36 +2,42 @@
 
 import { useRef, useState } from "react";
 
+import type { VideoClip } from "@/lib/types";
+
 const MAX_EXTRA_CLIPS = 2;
 
 type VideoClipsFieldProps = {
   name: string;
   label: string;
-  defaultValues?: string[];
+  defaultValues?: VideoClip[];
 };
 
-export function VideoClipsField({ name, label, defaultValues = [] }: VideoClipsFieldProps) {
-  const [items, setItems] = useState<string[]>(defaultValues.slice(0, MAX_EXTRA_CLIPS));
-  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
-  const [uploadError, setUploadError] = useState("");
-  const fileRefs = useRef<Record<number, HTMLInputElement | null>>({});
+const createClipId = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-  function updateItem(index: number, value: string) {
-    setItems((current) => current.map((item, i) => (i === index ? value : item)));
+export function VideoClipsField({ name, label, defaultValues = [] }: VideoClipsFieldProps) {
+  const [items, setItems] = useState<VideoClip[]>(defaultValues.slice(0, MAX_EXTRA_CLIPS));
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState("");
+  const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  function updateItem(id: string, patch: Partial<VideoClip>) {
+    setItems((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   }
 
   function addItem() {
-    setItems((current) => (current.length >= MAX_EXTRA_CLIPS ? current : [...current, ""]));
+    setItems((current) =>
+      current.length >= MAX_EXTRA_CLIPS ? current : [...current, { id: createClipId(), url: "", caption: "" }]
+    );
   }
 
-  function removeItem(index: number) {
-    setItems((current) => current.filter((_, i) => i !== index));
+  function removeItem(id: string) {
+    setItems((current) => current.filter((item) => item.id !== id));
   }
 
-  async function uploadClip(index: number, file?: File) {
+  async function uploadClip(id: string, file?: File) {
     if (!file) return;
 
-    setUploadingIndex(index);
+    setUploadingId(id);
     setUploadError("");
 
     try {
@@ -69,7 +75,7 @@ export function VideoClipsField({ name, label, defaultValues = [] }: VideoClipsF
           setUploadError(uploadData.message ?? "Upload failed.");
           return;
         }
-        if (uploadData.url) updateItem(index, uploadData.url);
+        if (uploadData.url) updateItem(id, { url: uploadData.url });
         return;
       }
 
@@ -84,16 +90,16 @@ export function VideoClipsField({ name, label, defaultValues = [] }: VideoClipsF
         return;
       }
 
-      updateItem(index, signData.publicUrl!);
+      updateItem(id, { url: signData.publicUrl! });
     } catch (err) {
       setUploadError(err instanceof Error ? err.message : "Network error — check your connection.");
     } finally {
-      setUploadingIndex(null);
-      if (fileRefs.current[index]) fileRefs.current[index]!.value = "";
+      setUploadingId(null);
+      if (fileRefs.current[id]) fileRefs.current[id]!.value = "";
     }
   }
 
-  const savedItems = items.filter((item) => item.trim());
+  const savedItems = items.filter((item) => item.url.trim());
 
   return (
     <div className="article-gallery-field field-full">
@@ -109,10 +115,10 @@ export function VideoClipsField({ name, label, defaultValues = [] }: VideoClipsF
       {items.length ? (
         <div className="article-gallery-admin-list">
           {items.map((item, index) => (
-            <div key={index} className="article-gallery-admin-item">
-              {item ? (
+            <div key={item.id} className="article-gallery-admin-item">
+              {item.url ? (
                 <div className="video-preview-wrap article-gallery-preview">
-                  <video src={item} controls preload="metadata" />
+                  <video src={item.url} controls preload="metadata" />
                 </div>
               ) : (
                 <div className="image-preview-empty article-gallery-preview-empty">No video set</div>
@@ -121,30 +127,36 @@ export function VideoClipsField({ name, label, defaultValues = [] }: VideoClipsF
               <div className="article-gallery-controls">
                 <input
                   type="text"
-                  value={item}
-                  onChange={(e) => updateItem(index, e.target.value)}
+                  value={item.url}
+                  onChange={(e) => updateItem(item.id, { url: e.target.value })}
                   placeholder="Paste video URL or upload a file..."
+                />
+                <input
+                  type="text"
+                  value={item.caption}
+                  onChange={(e) => updateItem(item.id, { caption: e.target.value })}
+                  placeholder="Caption"
                 />
                 <div className="article-gallery-actions">
                   <button
                     type="button"
                     className="button"
-                    onClick={() => fileRefs.current[index]?.click()}
-                    disabled={uploadingIndex === index}
+                    onClick={() => fileRefs.current[item.id]?.click()}
+                    disabled={uploadingId === item.id}
                   >
-                    {uploadingIndex === index ? "Uploading..." : "Upload File"}
+                    {uploadingId === item.id ? "Uploading..." : "Upload File"}
                   </button>
                   <input
                     ref={(node) => {
-                      fileRefs.current[index] = node;
+                      fileRefs.current[item.id] = node;
                     }}
                     type="file"
                     accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-msvideo"
                     className="image-file-input"
                     aria-label={`Upload ${label} ${index + 1}`}
-                    onChange={(e) => uploadClip(index, e.target.files?.[0])}
+                    onChange={(e) => uploadClip(item.id, e.target.files?.[0])}
                   />
-                  <button type="button" className="button button-danger" onClick={() => removeItem(index)}>
+                  <button type="button" className="button button-danger" onClick={() => removeItem(item.id)}>
                     Remove
                   </button>
                 </div>

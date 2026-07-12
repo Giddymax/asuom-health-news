@@ -68,14 +68,18 @@ function parseGallery(raw: FormDataEntryValue | undefined) {
   }
 }
 
-function parseVideoUrls(raw: FormDataEntryValue | undefined) {
+function parseVideoClips(raw: FormDataEntryValue | undefined) {
   try {
     const parsed = JSON.parse(String(raw ?? "[]"));
     if (!Array.isArray(parsed)) return [];
 
     return parsed
-      .map((item) => String(item ?? "").trim())
-      .filter((item) => item)
+      .map((item, index) => ({
+        id: String(item?.id || `clip-${index + 1}`),
+        url: String(item?.url ?? "").trim(),
+        caption: String(item?.caption ?? "").trim()
+      }))
+      .filter((item) => item.url)
       .slice(0, 2);
   } catch {
     return [];
@@ -226,7 +230,7 @@ export function AdminContentForms({
                 thumbnail: String(raw.thumbnail ?? ""),
                 duration: String(raw.duration ?? ""),
                 videoUrl: String(raw.videoUrl ?? ""),
-                extraVideoUrls: parseVideoUrls(raw.extraVideoUrlsJson),
+                extraClips: parseVideoClips(raw.extraClipsJson),
                 categorySlug: String(raw.categorySlug ?? ""),
                 publishedAt: String(raw.publishedAt ?? ""),
                 featured: raw.featured === "on",
@@ -517,9 +521,9 @@ function VideoFields({ categories, video, supabaseEnabled }: { categories: Categ
         defaultValue={video?.videoUrl ?? ""}
       />
       <VideoClipsField
-        name="extraVideoUrlsJson"
+        name="extraClipsJson"
         label="Additional Clips"
-        defaultValues={video?.extraVideoUrls ?? []}
+        defaultValues={video?.extraClips ?? []}
       />
     </>
   );

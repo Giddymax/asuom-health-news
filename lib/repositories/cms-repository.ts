@@ -14,6 +14,7 @@ import type {
   InfoPage,
   SiteSettings,
   Video,
+  VideoClip,
   VisitRecord
 } from "@/lib/types";
 import {
@@ -240,9 +241,28 @@ export async function listArticlesByCategory(slug: string): Promise<Article[]> {
   return articles.filter((article) => article.categorySlug === slug);
 }
 
-function mapExtraVideoUrls(raw: unknown): string[] {
+function mapExtraClips(raw: unknown): VideoClip[] {
   if (!Array.isArray(raw)) return [];
-  return raw.filter((item): item is string => typeof item === "string" && item.trim().length > 0).slice(0, 2);
+
+  return raw
+    .map((item, index) => {
+      if (typeof item === "string") {
+        const url = item.trim();
+        return url ? { id: `clip-${index + 1}`, url, caption: "" } : null;
+      }
+      if (!item || typeof item !== "object") return null;
+      const record = item as Record<string, unknown>;
+      const url = typeof record.url === "string" ? record.url.trim() : "";
+      if (!url) return null;
+
+      return {
+        id: typeof record.id === "string" && record.id ? record.id : `clip-${index + 1}`,
+        url,
+        caption: typeof record.caption === "string" ? record.caption.trim() : ""
+      };
+    })
+    .filter((item): item is VideoClip => Boolean(item))
+    .slice(0, 2);
 }
 
 function mapVideo(row: Record<string, unknown>): Video {
@@ -254,7 +274,7 @@ function mapVideo(row: Record<string, unknown>): Video {
     thumbnail: String(row.thumbnail_path),
     duration: String(row.duration_label),
     videoUrl: String(row.video_url),
-    extraVideoUrls: mapExtraVideoUrls(row.extra_video_urls),
+    extraClips: mapExtraClips(row.extra_video_urls),
     categorySlug: String(row.category_slug),
     publishedAt: String(row.published_at),
     featured: Boolean(row.featured),
@@ -521,7 +541,7 @@ export async function saveAdminContent(input: AdminContentInput) {
         thumbnail_path: input.thumbnail,
         duration_label: input.duration,
         video_url: input.videoUrl,
-        extra_video_urls: input.extraVideoUrls.slice(0, 2),
+        extra_video_urls: input.extraClips.slice(0, 2),
         category_slug: input.categorySlug,
         published_at: input.publishedAt,
         featured: input.featured,
